@@ -1,0 +1,57 @@
+name: apex-enterprise
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: apex_enterprise_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: apex_enterprise
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpass}
+      POSTGRES_DB: apex_enterprise
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - apex_enterprise_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  app:
+    build:
+      context: .
+    image: apex-enterprise:latest
+    container_name: apex_enterprise_app
+    restart: unless-stopped
+    init: true
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+      SITE_URL: ${SITE_URL:-http://localhost:3001}
+
+      DATABASE_URL: postgresql://apex_enterprise:${POSTGRES_PASSWORD:-devpass}@postgres:5432/apex_enterprise
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:?Set PAYLOAD_SECRET in .env}
+
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM_ADDRESS: ${SMTP_FROM_ADDRESS:-}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-APEX}
+    ports:
+      - "127.0.0.1:3001:3000"
+    volumes:
+      - ./media:/app/media
+
+volumes:
+  apex_enterprise_pgdata:

@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+
+@custom-variant can-hover (@media (hover: hover));
+
+@theme {
+  --color-paper: #000000;
+  --color-ink: #ffffff;
+  --color-mute: #9b9b9b;
+  --color-accent: #fc5c18;
+}
+
+@theme inline {
+  --font-sans: var(--font-poppins), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-paper);
+  }
+}
