@@ -26,6 +26,9 @@ RUN mkdir -p public
 # Generate Payload's component map before Next.js bundles the admin panel.
 RUN npm run generate:importmap
 
+# Keep Payload types synchronized with registered collections and globals.
+RUN npm run generate:types
+
 # Build optimized Next.js standalone output
 RUN npm run build
 

@@ -19,8 +19,10 @@ import { PreviewCell as PreviewCell_146ba935973cec7c2712eed4177c35c6 } from '../
 import { EditorialPanel as EditorialPanel_29991eab6d30e0273ca21263c97b37f3 } from '../../../components/admin/EditorialPanel'
 import { PreviewButton as PreviewButton_5f32e6dab79a8c9d0707d0d5893b327a } from '../../../components/admin/PreviewButton'
 import { ContactsToolbar as ContactsToolbar_9fff3ab9b47e7e3f98d1e51327fb46bd } from '../../../components/admin/ContactsToolbar'
+import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { EditorialQueue as EditorialQueue_dc68164c24f9d8e3fd84a8515eda7a25 } from '../../../components/admin/EditorialQueue'
 import { NewMessagesLink as NewMessagesLink_caf0c5707b208da91e132fa072fbb848 } from '../../../components/admin/NewMessagesLink'
+import { Dashboard as Dashboard_16b88e9b8c48e393fa86591406efd08f } from '../../../components/admin/Dashboard'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -46,7 +48,9 @@ export const importMap = {
   "/components/admin/EditorialPanel#EditorialPanel": EditorialPanel_29991eab6d30e0273ca21263c97b37f3,
   "/components/admin/PreviewButton#PreviewButton": PreviewButton_5f32e6dab79a8c9d0707d0d5893b327a,
   "/components/admin/ContactsToolbar#ContactsToolbar": ContactsToolbar_9fff3ab9b47e7e3f98d1e51327fb46bd,
+  "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
   "/components/admin/EditorialQueue#EditorialQueue": EditorialQueue_dc68164c24f9d8e3fd84a8515eda7a25,
   "/components/admin/NewMessagesLink#NewMessagesLink": NewMessagesLink_caf0c5707b208da91e132fa072fbb848,
+  "/components/admin/Dashboard#Dashboard": Dashboard_16b88e9b8c48e393fa86591406efd08f,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

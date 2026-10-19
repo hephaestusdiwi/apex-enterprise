@@ -27,6 +27,8 @@ services:
       context: .
     image: apex-enterprise:latest
     container_name: apex_enterprise_app
+    group_add:
+      - "1000"
     restart: unless-stopped
     init: true
     depends_on:
@@ -36,6 +38,7 @@ services:
       NODE_ENV: production
       PORT: "3000"
       HOSTNAME: "0.0.0.0"
+      JOBS_AUTORUN: "true"
       SITE_URL: ${SITE_URL:-http://localhost:3001}
 
       DATABASE_URL: postgresql://apex_enterprise:${POSTGRES_PASSWORD:-devpass}@postgres:5432/apex_enterprise

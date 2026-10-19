@@ -19,6 +19,11 @@ import { EditorialReviews } from './collections/EditorialReviews'
 import { EditorialNotes } from './collections/EditorialNotes'
 import { WorkflowSettings } from './globals/WorkflowSettings'
 import { editorialEndpoints } from './editorial/endpoints'
+import { ServicePackages } from './collections/ServicePackages'
+import { BookingSettings } from './globals/BookingSettings'
+import { BookingBlackouts } from './collections/BookingBlackouts'
+import { Bookings } from './collections/Bookings'
+import { expireBookingsTask } from './jobs/expireBookings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -44,10 +49,11 @@ export default buildConfig({
       },
     },
   },
-  collections: [Users, Media, Videos, Projects, Pages, Contacts, Visits, EditorialReviews, EditorialNotes],
-  globals: [SiteSettings, ContactSettings, WorkflowSettings],
+  collections: [Users, Media, Videos, Projects, Pages, Contacts, Visits, EditorialReviews, EditorialNotes, ServicePackages, BookingBlackouts, Bookings],
+  globals: [SiteSettings, ContactSettings, WorkflowSettings, BookingSettings],
   endpoints: editorialEndpoints,
   jobs: {
+    tasks: [expireBookingsTask],
     autoRun: [{ cron: '* * * * *', limit: 10, queue: 'default' }],
     shouldAutoRun: () => process.env.JOBS_AUTORUN !== 'false',
   },

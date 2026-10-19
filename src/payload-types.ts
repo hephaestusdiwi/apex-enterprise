@@ -76,6 +76,9 @@ export interface Config {
     visits: Visit;
     'editorial-reviews': EditorialReview;
     'editorial-notes': EditorialNote;
+    'service-packages': ServicePackage;
+    'booking-blackouts': BookingBlackout;
+    bookings: Booking;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -93,6 +96,9 @@ export interface Config {
     visits: VisitsSelect<false> | VisitsSelect<true>;
     'editorial-reviews': EditorialReviewsSelect<false> | EditorialReviewsSelect<true>;
     'editorial-notes': EditorialNotesSelect<false> | EditorialNotesSelect<true>;
+    'service-packages': ServicePackagesSelect<false> | ServicePackagesSelect<true>;
+    'booking-blackouts': BookingBlackoutsSelect<false> | BookingBlackoutsSelect<true>;
+    bookings: BookingsSelect<false> | BookingsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -107,11 +113,15 @@ export interface Config {
     'site-settings': SiteSetting;
     'contact-settings': ContactSetting;
     'workflow-settings': WorkflowSetting;
+    'booking-settings': BookingSetting;
+    'payload-jobs-stats': PayloadJobsStat;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'contact-settings': ContactSettingsSelect<false> | ContactSettingsSelect<true>;
     'workflow-settings': WorkflowSettingsSelect<false> | WorkflowSettingsSelect<true>;
+    'booking-settings': BookingSettingsSelect<false> | BookingSettingsSelect<true>;
+    'payload-jobs-stats': PayloadJobsStatsSelect<false> | PayloadJobsStatsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -120,6 +130,7 @@ export interface Config {
   user: User;
   jobs: {
     tasks: {
+      expireBookings: TaskExpireBookings;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -752,6 +763,117 @@ export interface EditorialNote {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-packages".
+ */
+export interface ServicePackage {
+  id: number;
+  _order?: string | null;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  tagline?: string | null;
+  description?: string | null;
+  priceType: 'fixed' | 'from' | 'custom';
+  /**
+   * Rupiah, tanpa titik
+   */
+  price?: number | null;
+  /**
+   * Contoh: per hari, per project
+   */
+  priceNote?: string | null;
+  features?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  highlighted?: boolean | null;
+  /**
+   * Dipakai wizard booking nanti
+   */
+  bookable?: boolean | null;
+  /**
+   * Semua opsional. Kosong = otomatis dari konten.
+   */
+  seo?: {
+    /**
+     * Ideal ≤ 60 karakter. Kosong = judul halaman.
+     */
+    title?: string | null;
+    /**
+     * Ideal 120–160 karakter.
+     */
+    description?: string | null;
+    /**
+     * Gambar share (OG), ideal 1200×630. Kosong = hero/cover.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-blackouts".
+ */
+export interface BookingBlackout {
+  id: number;
+  /**
+   * YYYY-MM-DD
+   */
+  startDate: string;
+  /**
+   * Kosong = satu hari saja
+   */
+  endDate?: string | null;
+  /**
+   * Kosong = tutup total. Isi angka = kapasitas hari itu diganti angka ini
+   */
+  capacity?: number | null;
+  reason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings".
+ */
+export interface Booking {
+  id: number;
+  code: string;
+  servicePackage: number | ServicePackage;
+  packageTitle?: string | null;
+  packagePrice?: number | null;
+  /**
+   * YYYY-MM-DD (WIB)
+   */
+  date: string;
+  name: string;
+  email: string;
+  phone: string;
+  notes?: string | null;
+  status: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'completed' | 'expired' | 'spam';
+  holdUntil?: string | null;
+  adminNote?: string | null;
+  /**
+   * Ikut terkirim di email saat status jadi Dikonfirmasi / Ditolak / Dibatalkan. Isi sebelum menyimpan perubahan status
+   */
+  statusNote?: string | null;
+  spamScore?: number | null;
+  spamReasons?: string | null;
+  ipHash?: string | null;
+  accessToken?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -819,7 +941,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug: 'inline' | 'expireBookings' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -852,10 +974,19 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'expireBookings' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -901,6 +1032,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'editorial-notes';
         value: number | EditorialNote;
+      } | null)
+    | ({
+        relationTo: 'service-packages';
+        value: number | ServicePackage;
+      } | null)
+    | ({
+        relationTo: 'booking-blackouts';
+        value: number | BookingBlackout;
+      } | null)
+    | ({
+        relationTo: 'bookings';
+        value: number | Booking;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1442,6 +1585,77 @@ export interface EditorialNotesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-packages_select".
+ */
+export interface ServicePackagesSelect<T extends boolean = true> {
+  _order?: T;
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  tagline?: T;
+  description?: T;
+  priceType?: T;
+  price?: T;
+  priceNote?: T;
+  features?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  highlighted?: T;
+  bookable?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-blackouts_select".
+ */
+export interface BookingBlackoutsSelect<T extends boolean = true> {
+  startDate?: T;
+  endDate?: T;
+  capacity?: T;
+  reason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings_select".
+ */
+export interface BookingsSelect<T extends boolean = true> {
+  code?: T;
+  servicePackage?: T;
+  packageTitle?: T;
+  packagePrice?: T;
+  date?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  notes?: T;
+  status?: T;
+  holdUntil?: T;
+  adminNote?: T;
+  statusNote?: T;
+  spamScore?: T;
+  spamReasons?: T;
+  ipHash?: T;
+  accessToken?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -1476,6 +1690,7 @@ export interface PayloadJobsSelect<T extends boolean = true> {
   queue?: T;
   waitUntil?: T;
   processing?: T;
+  meta?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1605,6 +1820,57 @@ export interface WorkflowSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-settings".
+ */
+export interface BookingSetting {
+  id: number;
+  /**
+   * Berapa booking yang bisa ditangani tim di hari yang sama
+   */
+  capacityPerDay: number;
+  workingDays?: ('0' | '1' | '2' | '3' | '4' | '5' | '6')[] | null;
+  minLeadDays?: number | null;
+  maxAdvanceDays?: number | null;
+  /**
+   * Dipakai Fase 3 dan 5
+   */
+  holdHours?: number | null;
+  /**
+   * Dipakai Fase 5. Mati = tim approve manual
+   */
+  autoConfirm?: boolean | null;
+  /**
+   * Kosong = pakai penerima di Pengaturan Kontak
+   */
+  recipients?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats".
+ */
+export interface PayloadJobsStat {
+  id: number;
+  stats?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -1668,6 +1934,37 @@ export interface WorkflowSettingsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-settings_select".
+ */
+export interface BookingSettingsSelect<T extends boolean = true> {
+  capacityPerDay?: T;
+  workingDays?: T;
+  minLeadDays?: T;
+  maxAdvanceDays?: T;
+  holdHours?: T;
+  autoConfirm?: T;
+  recipients?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats_select".
+ */
+export interface PayloadJobsStatsSelect<T extends boolean = true> {
+  stats?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -1675,6 +1972,16 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskExpireBookings".
+ */
+export interface TaskExpireBookings {
+  input?: unknown;
+  output: {
+    expired?: number | null;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
