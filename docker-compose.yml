@@ -56,5 +56,19 @@ services:
     volumes:
       - ./media:/app/media
 
+  migrate:
+    profiles: ['tools']
+    build:
+      context: .
+      target: builder
+    image: apex-enterprise-builder:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://apex_enterprise:${POSTGRES_PASSWORD:-devpass}@postgres:5432/apex_enterprise
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:?Set PAYLOAD_SECRET in .env}
+    command: ["npm", "run", "payload", "--", "migrate"]
+
 volumes:
   apex_enterprise_pgdata:

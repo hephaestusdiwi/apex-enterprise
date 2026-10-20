@@ -4,13 +4,14 @@ import { SITE_URL } from '@/lib/seo'
 import { formatDateId } from '@/lib/dateFormat'
 import { escapeHtml, oneLine } from '@/lib/mail'
 
-export type ClientMailKind = 'received' | 'confirmed' | 'rejected' | 'cancelled' | 'expired'
+export type ClientMailKind = 'received' | 'confirmed' | 'rejected' | 'cancelled' | 'expired' | 'reminder'
 
 const COPY: Record<ClientMailKind, { subject: string; lead: string }> = {
   received: { subject: 'Booking diterima', lead: 'Permintaan booking kamu sudah kami terima dan menunggu konfirmasi tim.' },
   confirmed: { subject: 'Booking dikonfirmasi', lead: 'Booking kamu sudah dikonfirmasi. Sampai jumpa di tanggal tersebut.' },
   rejected: { subject: 'Booking tidak dapat diproses', lead: 'Mohon maaf, kami belum bisa memproses booking ini.' },
   cancelled: { subject: 'Booking dibatalkan', lead: 'Booking kamu sudah dibatalkan.' },
+  reminder: { subject: 'Pengingat booking besok', lead: 'Pengingat: booking kamu dijadwalkan besok.' },
   expired: {
     subject: 'Booking kedaluwarsa',
     lead: 'Booking kamu belum sempat dikonfirmasi dan slot tanggalnya sudah kami lepas. Kamu bisa membuat booking baru kapan saja.',
@@ -97,5 +98,26 @@ export async function notifyBookingCreated(payload: Payload, b: Booking) {
       .catch((err: unknown) => payload.logger.error({ err, msg: `Gagal mengirim email staff untuk ${b.code}` }))
   } catch (err) {
     payload.logger.error({ err, msg: 'Gagal menyiapkan email booking' })
+  }
+}
+
+export async function notifyCancelledByClient(payload: Payload, b: Booking) {
+  try {
+    const to = await staffRecipients(payload)
+    if (to.length === 0) return
+    const adminUrl = `${SITE_URL}/admin/collections/bookings/${b.id}`
+    payload
+      .sendEmail({
+        to,
+        subject: oneLine(`[Booking] DIBATALKAN client · ${b.code} · ${b.date}`),
+        text: `Client membatalkan booking ${b.code}\nPaket: ${b.packageTitle ?? ''}\nTanggal: ${formatDateId(b.date)}\nNama: ${b.name}\nWhatsApp: ${b.phone}\n\nAdmin: ${adminUrl}`,
+        html: `<p>Client membatalkan booking <strong>${escapeHtml(b.code)}</strong>.</p>
+          <p>Paket: ${escapeHtml(b.packageTitle ?? '')}<br />Tanggal: ${escapeHtml(formatDateId(b.date))}<br />
+          Nama: ${escapeHtml(b.name)}<br />WhatsApp: ${escapeHtml(b.phone)}</p>
+          <p><a href="${escapeHtml(adminUrl)}">Buka di admin</a></p>`,
+      })
+      .catch((err: unknown) => payload.logger.error({ err, msg: `Gagal mengirim email pembatalan ${b.code}` }))
+  } catch (err) {
+    payload.logger.error({ err, msg: 'Gagal menyiapkan email pembatalan' })
   }
 }

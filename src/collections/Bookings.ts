@@ -86,6 +86,12 @@ export const Bookings: CollectionConfig = {
       label: 'Hold sampai',
       admin: { position: 'sidebar', readOnly: true, date: { pickerAppearance: 'dayAndTime' } },
     },
+    {
+      name: 'reminderSentAt',
+      type: 'date',
+      label: 'Reminder H-1 terkirim',
+      admin: { position: 'sidebar', readOnly: true, date: { pickerAppearance: 'dayAndTime' } },
+    },
     { name: 'adminNote', type: 'textarea', label: 'Catatan internal', admin: { position: 'sidebar' } },
     {
       name: 'statusNote',

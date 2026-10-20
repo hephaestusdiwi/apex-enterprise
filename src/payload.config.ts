@@ -24,6 +24,7 @@ import { BookingSettings } from './globals/BookingSettings'
 import { BookingBlackouts } from './collections/BookingBlackouts'
 import { Bookings } from './collections/Bookings'
 import { expireBookingsTask } from './jobs/expireBookings'
+import { bookingRemindersTask } from './jobs/bookingReminders'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -42,10 +43,18 @@ export default buildConfig({
     components: {
       beforeDashboard: [
         '/components/admin/EditorialQueue#EditorialQueue',
+        '/components/admin/BookingQueue#BookingQueue',
       ],
-      beforeNavLinks: ['/components/admin/NewMessagesLink#NewMessagesLink'],
+      beforeNavLinks: [
+        '/components/admin/NewMessagesLink#NewMessagesLink',    
+        '/components/admin/BookingNavLinks#BookingNavLinks',
+      ],
       views: {
         dashboard: { Component: '/components/admin/Dashboard#Dashboard' },
+        bookingCalendar: {
+          Component: '/components/admin/BookingCalendarView#BookingCalendarView',
+          path: '/booking-calendar',
+        },
       },
     },
   },
@@ -53,7 +62,7 @@ export default buildConfig({
   globals: [SiteSettings, ContactSettings, WorkflowSettings, BookingSettings],
   endpoints: editorialEndpoints,
   jobs: {
-    tasks: [expireBookingsTask],
+    tasks: [expireBookingsTask, bookingRemindersTask],
     autoRun: [{ cron: '* * * * *', limit: 10, queue: 'default' }],
     shouldAutoRun: () => process.env.JOBS_AUTORUN !== 'false',
   },

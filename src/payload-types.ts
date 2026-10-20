@@ -131,6 +131,7 @@ export interface Config {
   jobs: {
     tasks: {
       expireBookings: TaskExpireBookings;
+      bookingReminders: TaskBookingReminders;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -860,6 +861,7 @@ export interface Booking {
   notes?: string | null;
   status: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'completed' | 'expired' | 'spam';
   holdUntil?: string | null;
+  reminderSentAt?: string | null;
   adminNote?: string | null;
   /**
    * Ikut terkirim di email saat status jadi Dikonfirmasi / Ditolak / Dibatalkan. Isi sebelum menyimpan perubahan status
@@ -941,7 +943,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'expireBookings' | 'schedulePublish';
+        taskSlug: 'inline' | 'expireBookings' | 'bookingReminders' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -974,7 +976,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'expireBookings' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'expireBookings' | 'bookingReminders' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -1645,6 +1647,7 @@ export interface BookingsSelect<T extends boolean = true> {
   notes?: T;
   status?: T;
   holdUntil?: T;
+  reminderSentAt?: T;
   adminNote?: T;
   statusNote?: T;
   spamScore?: T;
@@ -1981,6 +1984,16 @@ export interface TaskExpireBookings {
   input?: unknown;
   output: {
     expired?: number | null;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskBookingReminders".
+ */
+export interface TaskBookingReminders {
+  input?: unknown;
+  output: {
+    sent?: number | null;
   };
 }
 /**

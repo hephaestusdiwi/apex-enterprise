@@ -53,6 +53,8 @@ export function normalizePath(input: unknown): string | null {
   if (!path.startsWith('/') || path.startsWith('//')) return null
   if (/^\/(admin|api|_next)(\/|$)/.test(path)) return null
   if (path.length > 1) path = path.replace(/\/+$/, '')
+  // Halaman status booking membawa kode unik: gabungkan supaya statistik tidak penuh path unik.
+  path = path.replace(/^\/booking\/[^/]+$/, '/booking/[kode]')
   return path.slice(0, 200)
 }
 

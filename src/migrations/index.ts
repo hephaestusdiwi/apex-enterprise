@@ -11,6 +11,7 @@ import * as migration_20261018_163007_booking_availability from './20261018_1630
 import * as migration_20261018_163920 from './20261018_163920';
 import * as migration_20261018_171422_bookings from './20261018_171422_bookings';
 import * as migration_20261019_141403_booking_notifications from './20261019_141403_booking_notifications';
+import * as migration_20261020_174822_booking_reminder from './20261020_174822_booking_reminder';
 
 export const migrations = [
   {
@@ -76,6 +77,11 @@ export const migrations = [
   {
     up: migration_20261019_141403_booking_notifications.up,
     down: migration_20261019_141403_booking_notifications.down,
-    name: '20261019_141403_booking_notifications'
+    name: '20261019_141403_booking_notifications',
+  },
+  {
+    up: migration_20261020_174822_booking_reminder.up,
+    down: migration_20261020_174822_booking_reminder.down,
+    name: '20261020_174822_booking_reminder'
   },
 ];
