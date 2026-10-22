@@ -1,4 +1,4 @@
-import type { Media, Page, Project, Video } from '@/payload-types'
+import type { Media, Page, Post, PostCategory, Project, Video } from '@/payload-types'
 import { isAllowedEmbedUrl } from '@/lib/embed'
 import { isSafeHref } from '@/lib/href'
 import { TEXT_COLOR_KEYS, TEXT_SIZE_KEYS } from '@/lib/richStyles'
@@ -16,6 +16,9 @@ import {
   type BlockLayout,
   type MediaAsset,
   type PageData,
+  type PostCategoryData,
+  type PostData,
+  type PostSummary,
   type ProjectData,
   type ProjectMetaItem,
   type ProjectSummary,
@@ -316,4 +319,36 @@ export const mapSummary = (doc: SummaryDoc): ProjectSummary => ({
   video: toVideoAsset(doc.home?.coverVideo),
   size: pick(doc.home?.size, HOME_SIZES) ?? 'medium',
   align: pick(doc.home?.align, HOME_ALIGNS) ?? 'center',
+})
+
+// --- Blog
+
+export const toPostCategory = (value: number | PostCategory | null | undefined): PostCategoryData | null => {
+  if (!value || typeof value !== 'object' || !value.slug) return null
+  return {
+    id: value.id,
+    slug: value.slug,
+    title: value.title,
+    description: value.description?.trim() || undefined,
+  }
+}
+
+type PostSummaryDoc = Pick<Post, 'id' | 'title' | 'slug' | 'excerpt' | 'cover' | 'category' | 'authorName' | 'publishedAt'>
+
+export const mapPostSummary = (doc: PostSummaryDoc): PostSummary => ({
+  id: doc.id,
+  slug: doc.slug ?? '',
+  title: doc.title,
+  excerpt: doc.excerpt?.trim() ?? '',
+  cover: toMedia(doc.cover),
+  category: toPostCategory(doc.category),
+  authorName: doc.authorName?.trim() || null,
+  publishedAt: doc.publishedAt ?? null,
+})
+
+export const mapPost = (doc: Post): PostData => ({
+  ...mapPostSummary(doc),
+  seo: toSeo(doc.seo),
+  updatedAt: doc.updatedAt,
+  blocks: mapBlocks(doc.blocks, { title: doc.title, meta: [] }),
 })

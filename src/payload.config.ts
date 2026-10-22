@@ -12,6 +12,8 @@ import { Pages } from './collections/Pages'
 import { SiteSettings } from './globals/SiteSettings'
 import { ContactSettings } from './globals/ContactSettings'
 import { Projects } from './collections/Projects'
+import { Posts } from './collections/Posts'
+import { PostCategories } from './collections/PostCategories'
 import { Videos } from './collections/Videos'
 import { Contacts } from './collections/Contacts'
 import { Visits } from './collections/Visits'
@@ -58,7 +60,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Users, Media, Videos, Projects, Pages, Contacts, Visits, EditorialReviews, EditorialNotes, ServicePackages, BookingBlackouts, Bookings],
+  collections: [Users, Media, Videos, Projects, Pages, PostCategories, Posts, Contacts, Visits, EditorialReviews, EditorialNotes, ServicePackages, BookingBlackouts, Bookings],
   globals: [SiteSettings, ContactSettings, WorkflowSettings, BookingSettings],
   endpoints: editorialEndpoints,
   jobs: {

@@ -72,6 +72,8 @@ export interface Config {
     videos: Video;
     projects: Project;
     pages: Page;
+    'post-categories': PostCategory;
+    posts: Post;
     contacts: Contact;
     visits: Visit;
     'editorial-reviews': EditorialReview;
@@ -92,6 +94,8 @@ export interface Config {
     videos: VideosSelect<false> | VideosSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    'post-categories': PostCategoriesSelect<false> | PostCategoriesSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
     contacts: ContactsSelect<false> | ContactsSelect<true>;
     visits: VisitsSelect<false> | VisitsSelect<true>;
     'editorial-reviews': EditorialReviewsSelect<false> | EditorialReviewsSelect<true>;
@@ -687,6 +691,89 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "post-categories".
+ */
+export interface PostCategory {
+  id: number;
+  title: string;
+  /**
+   * Otomatis dari judul kalau di kosongkan
+   */
+  slug?: string | null;
+  /**
+   * Opsional. Penjelasan singkat kategori.
+   */
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title: string;
+  /**
+   * Otomatis dari judul kalau di kosongkan
+   */
+  slug?: string | null;
+  /**
+   * Satu-dua kalimat untuk kartu daftar artikel. Juga jadi deskripsi SEO bila kolom SEO dikosongkan.
+   */
+  excerpt: string;
+  /**
+   * Tampil di kartu dan di atas artikel. Kosong = artikel tampil tanpa gambar.
+   */
+  cover?: (number | null) | Media;
+  category?: (number | null) | PostCategory;
+  /**
+   * Tampil di artikel. Kosong = tidak ditampilkan.
+   */
+  authorName?: string | null;
+  /**
+   * Terisi otomatis saat pertama dipublikasikan. Boleh diubah.
+   */
+  publishedAt?: string | null;
+  blocks?:
+    | (
+        | HeadingBlock
+        | TextBlock
+        | ImageBlock
+        | ImageTextBlock
+        | GalleryBlock
+        | VideoBlock
+        | LinkBlock
+        | QuoteBlock
+        | EmbedBlock
+        | ListBlock
+        | SpacerBlock
+      )[]
+    | null;
+  /**
+   * Semua opsional. Kosong = otomatis dari konten.
+   */
+  seo?: {
+    /**
+     * Ideal ≤ 60 karakter. Kosong = judul halaman.
+     */
+    title?: string | null;
+    /**
+     * Ideal 120–160 karakter.
+     */
+    description?: string | null;
+    /**
+     * Gambar share (OG), ideal 1200×630. Kosong = hero/cover.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contacts".
  */
 export interface Contact {
@@ -730,7 +817,7 @@ export interface Visit {
  */
 export interface EditorialReview {
   id: number;
-  docCollection: 'projects' | 'pages';
+  docCollection: 'projects' | 'pages' | 'posts';
   docId: number;
   status: 'draft' | 'in_review' | 'changes_requested' | 'approved';
   reviewers?: (number | User)[] | null;
@@ -751,7 +838,7 @@ export interface EditorialReview {
  */
 export interface EditorialNote {
   id: number;
-  docCollection: 'projects' | 'pages';
+  docCollection: 'projects' | 'pages' | 'posts';
   docId: number;
   author: number | User;
   kind: 'comment' | 'review' | 'system';
@@ -1018,6 +1105,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'post-categories';
+        value: number | PostCategory;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
       } | null)
     | ({
         relationTo: 'contacts';
@@ -1523,6 +1618,56 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "post-categories_select".
+ */
+export interface PostCategoriesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  cover?: T;
+  category?: T;
+  authorName?: T;
+  publishedAt?: T;
+  blocks?:
+    | T
+    | {
+        heading?: T | HeadingBlockSelect<T>;
+        text?: T | TextBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
+        imageText?: T | ImageTextBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
+        video?: T | VideoBlockSelect<T>;
+        link?: T | LinkBlockSelect<T>;
+        quote?: T | QuoteBlockSelect<T>;
+        embed?: T | EmbedBlockSelect<T>;
+        list?: T | ListBlockSelect<T>;
+        spacer?: T | SpacerBlockSelect<T>;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contacts_select".
  */
 export interface ContactsSelect<T extends boolean = true> {
@@ -2012,6 +2157,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'pages';
           value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
         } | null);
     global?: string | null;
     user?: {

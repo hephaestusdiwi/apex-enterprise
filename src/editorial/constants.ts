@@ -1,4 +1,4 @@
-export const EDITORIAL_COLLECTIONS = ['projects', 'pages'] as const
+export const EDITORIAL_COLLECTIONS = ['projects', 'pages', 'posts'] as const
 export type EditorialCollection = (typeof EDITORIAL_COLLECTIONS)[number]
 
 export const isEditorialCollection = (value: unknown): value is EditorialCollection =>

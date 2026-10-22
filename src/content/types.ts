@@ -192,3 +192,37 @@ export type PageData = {
   blocks: BlockData[]
   seo: SeoData
 }
+
+export type PostCategoryData = {
+  id: number
+  slug: string
+  title: string
+  description?: string
+}
+
+export type PostSummary = {
+  id: number
+  slug: string
+  title: string
+  excerpt: string
+  cover: MediaAsset | null
+  category: PostCategoryData | null
+  authorName: string | null
+  /** ISO 8601; null bila belum pernah dipublikasikan (hanya mungkin di preview). */
+  publishedAt: string | null
+}
+
+export type PostData = PostSummary & {
+  blocks: BlockData[]
+  seo: SeoData
+  updatedAt: string
+}
+
+export type PostListPage = {
+  posts: PostSummary[]
+  page: number
+  totalPages: number
+  totalDocs: number
+}
+
+export type PostCategoryWithCount = PostCategoryData & { count: number }

@@ -108,7 +108,7 @@ async function loadStaff(payload: Payload): Promise<Map<string, Person & { role:
 /** Dokumen draft terbaru, hanya jika user memang boleh membacanya (access control Payload). */
 async function loadDoc(payload: Payload, user: AppUser, collection: EditorialCollection, docId: number) {
   const doc = await payload.findByID({
-    collection,
+    collection: collection as never,
     id: docId,
     draft: true,
     depth: 0,
@@ -219,7 +219,8 @@ async function notify(
   }
 }
 
-const label = (collection: EditorialCollection) => (collection === 'projects' ? 'Project' : 'Page')
+const LABELS: Record<EditorialCollection, string> = { projects: 'Project', pages: 'Page', posts: 'Artikel' }
+const label = (collection: EditorialCollection) => LABELS[collection]
 
 async function addNoteRow(
   payload: Payload,

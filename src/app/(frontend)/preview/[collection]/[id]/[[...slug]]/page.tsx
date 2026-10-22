@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
+import { PostPage } from '@/components/blog/PostPage'
 import { PreviewBanner } from '@/components/preview/PreviewBanner'
 import { PreviewMessage } from '@/components/preview/PreviewMessage'
 import { PageView } from '@/components/page/PageView'
 import { ProjectPage } from '@/components/project/ProjectPage'
-import { mapPage, mapProject } from '@/content/mapper'
+import { mapPage, mapPost, mapProject } from '@/content/mapper'
 import { getNeighbors } from '@/content/navigation'
+import { getRelatedPosts } from '@/content/posts'
 import { getProjectList } from '@/content/projects'
 import { resolvePreview } from '@/preview/resolve'
 import { incompleteReason } from '@/preview/validate'
@@ -65,6 +67,9 @@ export default async function PreviewPage({ params, searchParams }: Props) {
       const project = mapProject(result.doc)
       const list = await getProjectList()
       content = <ProjectPage project={project} neighbors={getNeighbors(list, project.slug)} />
+    } else if (result.collection === 'posts') {
+      const post = mapPost(result.doc)
+      content = <PostPage post={post} related={await getRelatedPosts(post.id, post.category?.id ?? null)} />
     } else {
       content = <PageView page={mapPage(result.doc)} />
     }

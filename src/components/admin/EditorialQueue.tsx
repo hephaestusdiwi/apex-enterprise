@@ -19,7 +19,9 @@ const when = (iso: string | Date | null | undefined) =>
 
 async function titleOf(payload: Payload, user: ServerProps['user'], collection: EditorialCollection, id: number | string) {
   const doc = await payload.findByID({
-    collection,
+    // Payload's Local API type here only exposes the page/project overloads;
+    // the runtime collection may also be posts, which shares the same title field.
+    collection: collection as 'projects' | 'pages',
     id: Number(id),
     draft: true,
     depth: 0,

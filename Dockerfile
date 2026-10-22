@@ -9,8 +9,9 @@ WORKDIR /app
 # Install dependencies
 FROM base AS deps
 
-COPY package.json package-lock.json .npmrc ./
-RUN npm ci
+RUN corepack enable && corepack prepare pnpm@11.25.0 --activate
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+RUN pnpm install --frozen-lockfile
 
 # Build Next.js application
 FROM base AS builder

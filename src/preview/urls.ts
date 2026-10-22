@@ -1,6 +1,6 @@
 /** Helper URL yang aman dipakai di server maupun client (tanpa dependensi Node). */
 
-export const PREVIEW_COLLECTIONS = ['projects', 'pages'] as const
+export const PREVIEW_COLLECTIONS = ['projects', 'pages', 'posts'] as const
 export type PreviewCollection = (typeof PREVIEW_COLLECTIONS)[number]
 
 export const isPreviewCollection = (value: unknown): value is PreviewCollection =>
@@ -20,5 +20,7 @@ export const loginPath = (redirectTo: string): string => `/admin/login?redirect=
 /** Halaman publik untuk dokumen yang sudah published (null bila tidak ada). */
 export const publicPath = (collection: PreviewCollection, slug?: string | null): string | null => {
   if (!slug) return null
-  return collection === 'projects' ? `/work/${encodeURIComponent(slug)}` : `/${encodeURIComponent(slug)}`
+  if (collection === 'projects') return `/work/${encodeURIComponent(slug)}`
+  if (collection === 'posts') return `/blog/${encodeURIComponent(slug)}`
+  return `/${encodeURIComponent(slug)}`
 }

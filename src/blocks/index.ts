@@ -27,3 +27,7 @@ export const projectBlocks: Block[] = [
   TitleSlotBlock,
   MetaSlotBlock,
 ]
+
+/** Block untuk artikel blog: sama dengan project, tanpa penanda title/meta (judul dirender header artikel). */
+const SLOT_BLOCKS: ReadonlySet<string> = new Set([TitleSlotBlock.slug, MetaSlotBlock.slug])
+export const postBlocks: Block[] = projectBlocks.filter((block) => !SLOT_BLOCKS.has(block.slug))
