@@ -274,22 +274,10 @@ export interface Project {
    * Otomatis dari judul kalau di kosongkan
    */
   slug?: string | null;
+  /**
+   * Gambar besar di atas halaman proyek. Juga jadi cadangan cover di Home.
+   */
   hero?: (number | null) | Media;
-  home?: {
-    /**
-     * Gambar di index home. Kosong = pakai hero.
-     */
-    cover?: (number | null) | Media;
-    /**
-     * Opsional. Kalau diisi, tile di home memutar video ini (tanpa suara, berulang, hanya saat terlihat). Cover dipakai sebagai poster.
-     */
-    coverVideo?: (number | null) | Video;
-    size?: ('small' | 'medium' | 'large' | 'full') | null;
-    /**
-     * Bagian gambar yang dipertahankan saat di-crop. Center = ikuti focal point.
-     */
-    align?: ('left' | 'center' | 'right') | null;
-  };
   /**
    * Label bebas: Company, Role, Client, Location, dst
    */
@@ -317,6 +305,21 @@ export interface Project {
         | MetaSlotBlock
       )[]
     | null;
+  home?: {
+    /**
+     * Gambar di index home. Kosong = pakai hero.
+     */
+    cover?: (number | null) | Media;
+    /**
+     * Opsional. Kalau diisi, tile di home memutar video ini (tanpa suara, berulang, hanya saat terlihat). Cover dipakai sebagai poster.
+     */
+    coverVideo?: (number | null) | Video;
+    size?: ('small' | 'medium' | 'large' | 'full') | null;
+    /**
+     * Bagian gambar yang dipertahankan saat di-crop. Center = ikuti focal point.
+     */
+    align?: ('left' | 'center' | 'right') | null;
+  };
   /**
    * Semua opsional. Kosong = otomatis dari konten.
    */
@@ -718,14 +721,6 @@ export interface Post {
    * Otomatis dari judul kalau di kosongkan
    */
   slug?: string | null;
-  /**
-   * Satu-dua kalimat untuk kartu daftar artikel. Juga jadi deskripsi SEO bila kolom SEO dikosongkan.
-   */
-  excerpt: string;
-  /**
-   * Tampil di kartu dan di atas artikel. Kosong = artikel tampil tanpa gambar.
-   */
-  cover?: (number | null) | Media;
   category?: (number | null) | PostCategory;
   /**
    * Tampil di artikel. Kosong = tidak ditampilkan.
@@ -735,6 +730,14 @@ export interface Post {
    * Terisi otomatis saat pertama dipublikasikan. Boleh diubah.
    */
   publishedAt?: string | null;
+  /**
+   * Satu-dua kalimat untuk kartu daftar artikel. Juga jadi deskripsi SEO bila kolom SEO dikosongkan.
+   */
+  excerpt: string;
+  /**
+   * Tampil di kartu dan di atas artikel. Kosong = artikel tampil tanpa gambar.
+   */
+  cover?: (number | null) | Media;
   blocks?:
     | (
         | HeadingBlock
@@ -1297,14 +1300,6 @@ export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   hero?: T;
-  home?:
-    | T
-    | {
-        cover?: T;
-        coverVideo?: T;
-        size?: T;
-        align?: T;
-      };
   meta?:
     | T
     | {
@@ -1328,6 +1323,14 @@ export interface ProjectsSelect<T extends boolean = true> {
         spacer?: T | SpacerBlockSelect<T>;
         titleSlot?: T | TitleSlotBlockSelect<T>;
         metaSlot?: T | MetaSlotBlockSelect<T>;
+      };
+  home?:
+    | T
+    | {
+        cover?: T;
+        coverVideo?: T;
+        size?: T;
+        align?: T;
       };
   seo?:
     | T
@@ -1634,11 +1637,11 @@ export interface PostCategoriesSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
-  excerpt?: T;
-  cover?: T;
   category?: T;
   authorName?: T;
   publishedAt?: T;
+  excerpt?: T;
+  cover?: T;
   blocks?:
     | T
     | {

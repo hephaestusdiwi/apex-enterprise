@@ -17,6 +17,11 @@ import { HeadingFeatureClient as HeadingFeatureClient_e70f5e05f09f93e00b997edb1e
 import { ParagraphFeatureClient as ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { PreviewCell as PreviewCell_146ba935973cec7c2712eed4177c35c6 } from '../../../components/admin/PreviewCell'
 import { EditorialPanel as EditorialPanel_29991eab6d30e0273ca21263c97b37f3 } from '../../../components/admin/EditorialPanel'
+import { EditorChecklist as EditorChecklist_a3c1d8e5f2b94706b1d7e0c9f4a85b62 } from '../../../components/admin/EditorChecklist'
+import { StatusCell as StatusCell_b7d2e4f1a9c3485d8e6f0a1b2c3d4e5f } from '../../../components/admin/StatusCell'
+import { ContactSummary as ContactSummary_c8e3f5a2b0d4596e9f7a1b2c3d4e5f60 } from '../../../components/admin/ContactSummary'
+import { BookingSummary as BookingSummary_d9f4a6b3c1e5607fa08b2c3d4e5f6071 } from '../../../components/admin/BookingSummary'
+import { BookingsToolbar as BookingsToolbar_e0a5b7c4d2f6718ab19c3d4e5f607182 } from '../../../components/admin/BookingsToolbar'
 import { PreviewButton as PreviewButton_5f32e6dab79a8c9d0707d0d5893b327a } from '../../../components/admin/PreviewButton'
 import { ContactsToolbar as ContactsToolbar_9fff3ab9b47e7e3f98d1e51327fb46bd } from '../../../components/admin/ContactsToolbar'
 import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
@@ -49,6 +54,11 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ParagraphFeatureClient": ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/admin/PreviewCell#PreviewCell": PreviewCell_146ba935973cec7c2712eed4177c35c6,
   "/components/admin/EditorialPanel#EditorialPanel": EditorialPanel_29991eab6d30e0273ca21263c97b37f3,
+  "/components/admin/EditorChecklist#EditorChecklist": EditorChecklist_a3c1d8e5f2b94706b1d7e0c9f4a85b62,
+  "/components/admin/StatusCell#StatusCell": StatusCell_b7d2e4f1a9c3485d8e6f0a1b2c3d4e5f,
+  "/components/admin/ContactSummary#ContactSummary": ContactSummary_c8e3f5a2b0d4596e9f7a1b2c3d4e5f60,
+  "/components/admin/BookingSummary#BookingSummary": BookingSummary_d9f4a6b3c1e5607fa08b2c3d4e5f6071,
+  "/components/admin/BookingsToolbar#BookingsToolbar": BookingsToolbar_e0a5b7c4d2f6718ab19c3d4e5f607182,
   "/components/admin/PreviewButton#PreviewButton": PreviewButton_5f32e6dab79a8c9d0707d0d5893b327a,
   "/components/admin/ContactsToolbar#ContactsToolbar": ContactsToolbar_9fff3ab9b47e7e3f98d1e51327fb46bd,
   "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,

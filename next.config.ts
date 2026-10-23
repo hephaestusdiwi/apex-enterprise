@@ -35,6 +35,10 @@ const previewHeaders = [
 const nextConfig: NextConfig = {
   output: 'standalone',
 
+  experimental: {
+    agentUpgrade: 'security',
+  },
+
   poweredByHeader: false,
 
   async headers() {

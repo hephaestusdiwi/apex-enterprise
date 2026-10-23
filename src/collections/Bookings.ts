@@ -31,6 +31,9 @@ export const Bookings: CollectionConfig = {
     useAsTitle: 'code',
     defaultColumns: ['code', 'packageTitle', 'date', 'name', 'status', 'createdAt'],
     listSearchableFields: ['code', 'name', 'email', 'phone', 'packageTitle'],
+    components: {
+      beforeListTable: ['/components/admin/BookingsToolbar#BookingsToolbar'],
+    },
   },
   access: {
     // Booking hanya masuk lewat server action (Local API). Tidak ada create via REST/admin.
@@ -41,6 +44,12 @@ export const Bookings: CollectionConfig = {
   },
   hooks: { beforeChange: [guardStatusChange], afterChange: [notifyStatusChange] },
   fields: [
+    {
+      // Kartu ringkasan di sidebar (tidak punya kolom database).
+      name: 'summary',
+      type: 'ui',
+      admin: { position: 'sidebar', components: { Field: '/components/admin/BookingSummary#BookingSummary' } },
+    },
     { name: 'code', type: 'text', required: true, unique: true, index: true, label: 'Kode', admin: ro },
     { name: 'servicePackage', type: 'relationship', relationTo: 'service-packages', required: true, label: 'Paket', admin: ro },
     {
@@ -78,7 +87,7 @@ export const Bookings: CollectionConfig = {
         { label: 'Kedaluwarsa', value: 'expired' },
         { label: 'Spam (karantina)', value: 'spam' },
       ],
-      admin: { position: 'sidebar' },
+      admin: { position: 'sidebar', components: { Cell: '/components/admin/StatusCell#StatusCell' } },
     },
     {
       name: 'holdUntil',

@@ -8,10 +8,10 @@ import { call, stateUrl, type StateView } from './editorialClient'
 const POLL_MS = 30_000
 
 const box = {
-  border: '1px solid var(--theme-elevation-100)',
-  background: 'var(--theme-elevation-50)',
-  borderRadius: 4,
-  padding: 12,
+  border: '1px solid var(--ax-line, var(--theme-elevation-100))',
+  background: 'var(--ax-card, var(--theme-elevation-50))',
+  borderRadius: 'var(--ax-radius, 4px)',
+  padding: 16,
   display: 'grid',
   gap: 12,
   fontSize: 13,
@@ -22,7 +22,7 @@ const input = {
   border: '1px solid var(--theme-elevation-150)',
   background: 'var(--theme-input-bg, var(--theme-bg))',
   color: 'var(--theme-text)',
-  borderRadius: 4,
+  borderRadius: 10,
   padding: 8,
   font: 'inherit',
 } as const

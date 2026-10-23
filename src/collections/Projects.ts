@@ -1,4 +1,3 @@
-
 import type { CollectionConfig } from 'payload'
 import { adminOnly, publishedOrStaff, staffOnly } from '@/access'
 import { projectBlocks } from '../blocks'
@@ -7,8 +6,6 @@ import { slugField } from '../fields/slug'
 import { seoField } from '../fields/seo'
 import { previewLinkEndpoint } from '../preview/endpoint'
 import { afterDeleteCleanup, afterPublish, publishGate } from '../editorial/hooks'
-import { use } from 'react'
-import { sign } from 'crypto'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -41,83 +38,128 @@ export const Projects: CollectionConfig = {
     afterDelete: [afterDeleteCleanup('projects')],
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
-    slugField(),
-    { name: 'hero', type: 'upload', relationTo: 'media' },
     {
-      name: 'home',
-      type: 'group',
-      label: 'Tampilan di Home',
-      fields: [
+      name: 'title',
+      type: 'text',
+      label: 'Judul',
+      required: true,
+      admin: { placeholder: 'Tulis judul proyek di sini' },
+    },
+    {
+      // Kartu checklist di sidebar (tidak punya kolom database).
+      name: 'checklist',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: { Field: '/components/admin/EditorChecklist#EditorChecklist' },
+      },
+    },
+    slugField(),
+    {
+      // Tab tanpa nama: path field tidak berubah, jadi tidak perlu migrasi database.
+      type: 'tabs',
+      tabs: [
         {
-          name: 'cover',
-          type: 'upload',
-          relationTo: 'media',
-          admin: {
-            description: 'Gambar di index home. Kosong = pakai hero.',
-          },
-        },
-        {
-          name: 'coverVideo',
-          type: 'upload',
-          relationTo: 'videos',
-          admin: {
-            description:
-            'Opsional. Kalau diisi, tile di home memutar video ini (tanpa suara, berulang, hanya saat terlihat). Cover dipakai sebagai poster.',
-          },
-        },
-        {
-          type: 'row',
+          label: 'Halaman proyek',
+          description: 'Pilih gambar utama, isi info singkat proyek, lalu susun isi halaman dari blok.',
           fields: [
             {
-              name: 'size',
-              type: 'select',
-              defaultValue: 'medium',
-              admin: { width: '50%' },
-              options: [
-                { label: 'Small', value: 'small' },
-                { label: 'Medium', value: 'medium' },
-                { label: 'Large', value: 'large' },
-                { label: 'Full', value: 'full' },
+              name: 'hero',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'Gambar utama',
+              admin: { description: 'Gambar besar di atas halaman proyek. Juga jadi cadangan cover di Home.' },
+            },
+            {
+              name: 'meta',
+              type: 'array',
+              label: { singular: 'Meta', plural: 'Meta' },
+              admin: {
+                description: 'Label bebas: Company, Role, Client, Location, dst',
+              },
+              fields: [
+                { name: 'label', type: 'text', required: true },
+                { name: 'value', type: 'text', required: true },
               ],
             },
             {
-              name: 'align',
-              type: 'select',
-              label: 'Posisi crop',
-              defaultValue: 'center',
-              admin: {
-                width: '50%',
-                description:
-                  'Bagian gambar yang dipertahankan saat di-crop. Center = ikuti focal point.',
-              },
-              options: [
-                { label: 'Left', value: 'left' },
-                { label: 'Center', value: 'center' },
-                { label: 'Right', value: 'right' },
+              name: 'blocks',
+              type: 'blocks',
+              label: 'Isi halaman',
+              blocks: projectBlocks,
+              validate: validateSlots,
+            },
+          ],
+        },
+        {
+          label: 'Home',
+          description: 'Atur bagaimana proyek ini muncul di halaman depan.',
+          fields: [
+            {
+              name: 'home',
+              type: 'group',
+              label: 'Tampilan di Home',
+              fields: [
+                {
+                  name: 'cover',
+                  type: 'upload',
+                  relationTo: 'media',
+                  admin: {
+                    description: 'Gambar di index home. Kosong = pakai hero.',
+                  },
+                },
+                {
+                  name: 'coverVideo',
+                  type: 'upload',
+                  relationTo: 'videos',
+                  admin: {
+                    description:
+                      'Opsional. Kalau diisi, tile di home memutar video ini (tanpa suara, berulang, hanya saat terlihat). Cover dipakai sebagai poster.',
+                  },
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'size',
+                      type: 'select',
+                      defaultValue: 'medium',
+                      admin: { width: '50%' },
+                      options: [
+                        { label: 'Small', value: 'small' },
+                        { label: 'Medium', value: 'medium' },
+                        { label: 'Large', value: 'large' },
+                        { label: 'Full', value: 'full' },
+                      ],
+                    },
+                    {
+                      name: 'align',
+                      type: 'select',
+                      label: 'Posisi crop',
+                      defaultValue: 'center',
+                      admin: {
+                        width: '50%',
+                        description:
+                          'Bagian gambar yang dipertahankan saat di-crop. Center = ikuti focal point.',
+                      },
+                      options: [
+                        { label: 'Left', value: 'left' },
+                        { label: 'Center', value: 'center' },
+                        { label: 'Right', value: 'right' },
+                      ],
+                    },
+                  ],
+                },
               ],
             },
           ],
         },
+        {
+          label: 'SEO & berbagi',
+          description: 'Tampilan proyek di Google dan saat dibagikan. Semua opsional.',
+          fields: [seoField()],
+        },
       ],
-    },
-    {
-      name: 'meta',
-      type: 'array',
-      label: { singular: 'Meta', plural: 'Meta' },
-      admin: {
-        description: 'Label bebas: Company, Role, Client, Location, dst',
-      },
-      fields: [
-        { name: 'label', type: 'text', required: true },
-        { name: 'value', type: 'text', required: true },
-      ],
-    },
-    {
-      name: 'blocks',
-      type: 'blocks',
-      blocks: projectBlocks,
-      validate: validateSlots,
     },
     {
       name: 'preview',
@@ -133,6 +175,5 @@ export const Projects: CollectionConfig = {
         components: { Field: '/components/admin/EditorialPanel#EditorialPanel' },
       },
     },
-    seoField(),
   ],
 }

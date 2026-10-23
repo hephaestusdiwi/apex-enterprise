@@ -37,17 +37,6 @@ const toConditions = (where: unknown): Condition[] => {
 
 const without = (list: Condition[], field: string): Condition[] => list.filter((c) => !(field in c))
 
-const pill = (active: boolean) =>
-  ({
-    padding: '6px 12px',
-    borderRadius: 999,
-    border: '1px solid var(--theme-elevation-150)',
-    background: active ? 'var(--theme-text)' : 'transparent',
-    color: active ? 'var(--theme-bg)' : 'var(--theme-text)',
-    cursor: 'pointer',
-    fontSize: 13,
-  }) as const
-
 export function ContactsToolbar() {
   const router = useRouter()
   const { query, refineListData } = useListQuery()
@@ -102,28 +91,16 @@ export function ContactsToolbar() {
   }
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, margin: '0 0 16px' }}>
-      <div role="group" aria-label="Filter status" style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+    <div className="apex-toolbar">
+      <div role="group" aria-label="Filter status" className="apex-pills">
         {STATUSES.map((s) => (
-          <button key={s.value} type="button" aria-pressed={status === s.value} style={pill(status === s.value)} onClick={() => setStatus(s.value)}>
+          <button key={s.value} type="button" className="apex-pill" aria-pressed={status === s.value} onClick={() => setStatus(s.value)}>
             {s.label}
           </button>
         ))}
       </div>
 
-      <select
-        aria-label="Filter tanggal"
-        value={range}
-        onChange={(e) => setRange(e.target.value)}
-        style={{
-          padding: '6px 10px',
-          borderRadius: 4,
-          border: '1px solid var(--theme-elevation-150)',
-          background: 'var(--theme-input-bg)',
-          color: 'var(--theme-text)',
-          fontSize: 13,
-        }}
-      >
+      <select aria-label="Filter tanggal" className="apex-select" value={range} onChange={(e) => setRange(e.target.value)}>
         {RANGES.map((r) => (
           <option key={r.value} value={r.value}>
             {r.label}
@@ -137,12 +114,7 @@ export function ContactsToolbar() {
       </select>
 
       {count > 0 ? (
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => void archive()}
-          style={{ ...pill(true), marginLeft: 'auto', opacity: busy ? 0.6 : 1 }}
-        >
+        <button type="button" className="apex-pill apex-pill--action" disabled={busy} onClick={() => void archive()}>
           {busy ? 'Mengarsipkan…' : `Arsipkan ${count} terpilih`}
         </button>
       ) : null}

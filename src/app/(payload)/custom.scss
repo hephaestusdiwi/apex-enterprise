@@ -1,3 +1,6 @@
+@use './apex-editor';
+@use './apex-records';
+
 /*
  * Dashboard admin APEX (src/components/admin/Dashboard.tsx).
  * Semua aturan di bawah ini dibatasi di dalam .apex-dash supaya halaman admin lain tidak terpengaruh.
@@ -538,8 +541,8 @@
   }
 }
 
-/* APEX styling for the Projects collection and Site Settings admin screens only. */
-:where(.collection-list--projects, .collection-edit--projects, .global-edit--site-settings) {
+/* APEX styling for the Site Settings admin screen only. Projects/Posts/Pages: lihat apex-editor.scss. */
+:where(.global-edit--site-settings) {
   --apex-bg: #0d0e11;
   --apex-surface: #15171c;
   --apex-surface-2: #1d2027;
@@ -579,47 +582,6 @@
   color-scheme: dark;
 }
 
-.collection-list--projects {
-  min-height: calc(100vh - 100px);
-  padding: clamp(16px, 2.5vw, 32px);
-  border: 1px solid var(--apex-border);
-  border-radius: 18px;
-  background: var(--apex-bg);
-
-  .list-header__title,
-  .table thead,
-  .table th {
-    color: var(--apex-text);
-  }
-
-  .table {
-    overflow: hidden;
-    border: 1px solid var(--apex-border);
-    border-radius: 12px;
-    background: var(--apex-surface);
-  }
-
-  .table tbody tr:hover {
-    background: var(--apex-surface-2);
-  }
-
-  .list-header__create-new-button,
-  .btn--style-primary {
-    border-color: transparent;
-    border-radius: 999px;
-    background: var(--apex-accent);
-    color: var(--apex-accent-ink);
-    font-weight: 650;
-  }
-
-  .list-header__create-new-button:hover,
-  .btn--style-primary:hover {
-    background: #ff9d5c;
-    color: var(--apex-accent-ink);
-  }
-}
-
-.collection-edit--projects,
 .global-edit--site-settings {
   min-height: calc(100vh - 100px);
   padding: clamp(16px, 2.5vw, 32px);

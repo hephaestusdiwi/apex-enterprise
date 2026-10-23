@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { withBlockUi } from './blockUi'
 import { EmbedBlock } from './Embed'
 import { GalleryBlock } from './Gallery'
 import { HeadingBlock } from './Heading'
@@ -26,7 +27,7 @@ export const projectBlocks: Block[] = [
   SpacerBlock,
   TitleSlotBlock,
   MetaSlotBlock,
-]
+].map(withBlockUi)
 
 /** Block untuk artikel blog: sama dengan project, tanpa penanda title/meta (judul dirender header artikel). */
 const SLOT_BLOCKS: ReadonlySet<string> = new Set([TitleSlotBlock.slug, MetaSlotBlock.slug])

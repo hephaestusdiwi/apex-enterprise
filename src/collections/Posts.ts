@@ -49,25 +49,23 @@ export const Posts: CollectionConfig = {
     afterDelete: [afterDeleteCleanup('posts')],
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
-    slugField(),
     {
-      name: 'excerpt',
-      type: 'textarea',
-      label: 'Ringkasan',
+      name: 'title',
+      type: 'text',
+      label: 'Judul',
       required: true,
-      maxLength: 300,
+      admin: { placeholder: 'Tulis judul artikel di sini' },
+    },
+    {
+      // Kartu checklist di sidebar (tidak punya kolom database).
+      name: 'checklist',
+      type: 'ui',
       admin: {
-        description: 'Satu-dua kalimat untuk kartu daftar artikel. Juga jadi deskripsi SEO bila kolom SEO dikosongkan.',
+        position: 'sidebar',
+        components: { Field: '/components/admin/EditorChecklist#EditorChecklist' },
       },
     },
-    {
-      name: 'cover',
-      type: 'upload',
-      relationTo: 'media',
-      label: 'Gambar sampul',
-      admin: { description: 'Tampil di kartu dan di atas artikel. Kosong = artikel tampil tanpa gambar.' },
-    },
+    slugField(),
     {
       name: 'category',
       type: 'relationship',
@@ -91,7 +89,41 @@ export const Posts: CollectionConfig = {
         description: 'Terisi otomatis saat pertama dipublikasikan. Boleh diubah.',
       },
     },
-    { name: 'blocks', type: 'blocks', label: 'Isi artikel', blocks: postBlocks },
+    {
+      // Tab tanpa nama: path field tidak berubah, jadi tidak perlu migrasi database.
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Isi artikel',
+          description: 'Tulis ringkasan, pilih gambar sampul, lalu susun isi artikel dari blok.',
+          fields: [
+            {
+              name: 'excerpt',
+              type: 'textarea',
+              label: 'Ringkasan',
+              required: true,
+              maxLength: 300,
+              admin: {
+                description: 'Satu-dua kalimat untuk kartu daftar artikel. Juga jadi deskripsi SEO bila kolom SEO dikosongkan.',
+              },
+            },
+            {
+              name: 'cover',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'Gambar sampul',
+              admin: { description: 'Tampil di kartu dan di atas artikel. Kosong = artikel tampil tanpa gambar.' },
+            },
+            { name: 'blocks', type: 'blocks', label: 'Isi artikel', blocks: postBlocks },
+          ],
+        },
+        {
+          label: 'SEO & berbagi',
+          description: 'Tampilan artikel di Google dan saat dibagikan. Semua opsional.',
+          fields: [seoField()],
+        },
+      ],
+    },
     {
       name: 'preview',
       type: 'ui',
@@ -106,6 +138,5 @@ export const Posts: CollectionConfig = {
         components: { Field: '/components/admin/EditorialPanel#EditorialPanel' },
       },
     },
-    seoField(),
   ],
 }

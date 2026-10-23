@@ -80,6 +80,12 @@ export const Contacts: CollectionConfig = {
     afterChange: [notifyNewContact],
   },
   fields: [
+    {
+      // Kartu ringkasan di sidebar (tidak punya kolom database).
+      name: 'summary',
+      type: 'ui',
+      admin: { position: 'sidebar', components: { Field: '/components/admin/ContactSummary#ContactSummary' } },
+    },
     { name: 'name', type: 'text', label: 'Nama', required: true, maxLength: 120, admin: { readOnly: true } },
     { name: 'email', type: 'email', required: true, admin: { readOnly: true } },
     { name: 'subject', type: 'text', label: 'Subjek', maxLength: 200, admin: { readOnly: true } },
@@ -96,7 +102,7 @@ export const Contacts: CollectionConfig = {
         { label: 'Diarsipkan', value: 'archived' },
         { label: 'Spam (karantina)', value: 'spam' },
       ],
-      admin: { position: 'sidebar' },
+      admin: { position: 'sidebar', components: { Cell: '/components/admin/StatusCell#StatusCell' } },
     },
     {
       name: 'spamScore',

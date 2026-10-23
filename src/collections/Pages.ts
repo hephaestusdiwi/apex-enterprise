@@ -37,9 +37,41 @@ export const Pages: CollectionConfig = {
     afterDelete: [afterDeleteCleanup('pages')],
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
+    {
+      name: 'title',
+      type: 'text',
+      label: 'Judul',
+      required: true,
+      admin: { placeholder: 'Tulis judul halaman di sini' },
+    },
+    {
+      // Kartu checklist di sidebar (tidak punya kolom database).
+      name: 'checklist',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: { Field: '/components/admin/EditorChecklist#EditorChecklist' },
+      },
+    },
     slugField(),
-    { name: 'blocks', type: 'blocks', blocks: projectBlocks, validate: validateSlots },
+    {
+      // Tab tanpa nama: path field tidak berubah, jadi tidak perlu migrasi database.
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Isi halaman',
+          description: 'Susun isi halaman dari blok. Klik "Add" lalu pilih jenis blok yang dibutuhkan.',
+          fields: [
+            { name: 'blocks', type: 'blocks', label: 'Isi halaman', blocks: projectBlocks, validate: validateSlots },
+          ],
+        },
+        {
+          label: 'SEO & berbagi',
+          description: 'Tampilan halaman di Google dan saat dibagikan. Semua opsional.',
+          fields: [seoField()],
+        },
+      ],
+    },
     {
       name: 'preview',
       type: 'ui',
@@ -54,6 +86,5 @@ export const Pages: CollectionConfig = {
         components: { Field: '/components/admin/EditorialPanel#EditorialPanel' },
       },
     },
-    seoField(),
   ],
 }
