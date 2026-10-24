@@ -18,9 +18,19 @@
     background-color: var(--color-paper);
     color: var(--color-ink);
   }
+  /* --site-font-* diisi dari Site Settings > Tipografi (lihat SiteFonts). Belum dipilih = Poppins bawaan. */
   body {
-    font-family: var(--font-sans);
+    font-family: var(--site-font-body, var(--font-sans));
     -webkit-font-smoothing: antialiased;
+  }
+  /* Heading yang tidak diatur mengikuti font Body. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--site-font-heading, var(--site-font-body, var(--font-sans)));
   }
   ::selection {
     background-color: var(--color-accent);

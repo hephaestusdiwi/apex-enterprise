@@ -1,7 +1,8 @@
 import { cache } from 'react'
 import { isSafeHref } from '@/lib/href'
 import { getPayloadClient } from '@/lib/payload'
-import { toMedia, toSeo, toVideoAsset } from './mapper'
+import type { SiteFonts } from '@/lib/fonts'
+import { toFontChoice, toMedia, toSeo, toVideoAsset } from './mapper'
 import type { MediaAsset, SeoData, VideoAsset } from './types'
 
 export type HomeHeroData = {
@@ -18,6 +19,7 @@ export type SiteSettings = {
   navigation: { label: string; href: string }[]
   instagramUrl: string | null
   homeHero: HomeHeroData
+  fonts: SiteFonts
   seo: SeoData
 }
 
@@ -34,6 +36,10 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
       .map(({ label, href }) => ({ label, href })),
     instagramUrl: instagram && /^https?:\/\//i.test(instagram) ? instagram : null,
     seo: toSeo(settings.seo),
+    fonts: {
+      body: toFontChoice(settings.typography?.body),
+      heading: toFontChoice(settings.typography?.heading),
+    },
     homeHero: {
       video: toVideoAsset(settings.homeHero?.video),
       image: toMedia(settings.homeHero?.image),

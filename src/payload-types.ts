@@ -196,6 +196,9 @@ export interface User {
  */
 export interface Media {
   id: number;
+  /**
+   * Untuk file font, isi nama font (mis. "Inter Regular").
+   */
   alt: string;
   caption?: string | null;
   updatedAt: string;
@@ -1913,6 +1916,79 @@ export interface SiteSetting {
   };
   instagramUrl?: string | null;
   /**
+   * Font untuk seluruh website (panel admin tidak terpengaruh). Kosong = tampilan bawan poppins. Heading yang tidak diatur mengikuti font Body.
+   */
+  typography?: {
+    /**
+     * Teks isi, navigasi, form, dan elemen lain di luar heading.
+     */
+    body?: {
+      source?: ('default' | 'google' | 'upload') | null;
+      /**
+       * Pilihan dibatasi pada daftar yang dikelola di kode.
+       */
+      googleFamily?:
+        | (
+            | 'inter'
+            | 'poppins'
+            | 'roboto'
+            | 'open-sans'
+            | 'montserrat'
+            | 'lato'
+            | 'dm-sans'
+            | 'work-sans'
+            | 'manrope'
+            | 'space-grotesk'
+            | 'bebas-neue'
+            | 'playfair-display'
+            | 'lora'
+            | 'merriweather'
+            | 'cormorant-garamond'
+            | 'dm-serif-display'
+            | 'libre-baskerville'
+          )
+        | null;
+      /**
+       * Unggah file .woff2 (disarankan) atau .woff ke Media, lalu pilih di sini.
+       */
+      file?: (number | null) | Media;
+    };
+    /**
+     * Judul (h1–h6).
+     */
+    heading?: {
+      source?: ('default' | 'google' | 'upload') | null;
+      /**
+       * Pilihan dibatasi pada daftar yang dikelola di kode.
+       */
+      googleFamily?:
+        | (
+            | 'inter'
+            | 'poppins'
+            | 'roboto'
+            | 'open-sans'
+            | 'montserrat'
+            | 'lato'
+            | 'dm-sans'
+            | 'work-sans'
+            | 'manrope'
+            | 'space-grotesk'
+            | 'bebas-neue'
+            | 'playfair-display'
+            | 'lora'
+            | 'merriweather'
+            | 'cormorant-garamond'
+            | 'dm-serif-display'
+            | 'libre-baskerville'
+          )
+        | null;
+      /**
+       * Unggah file .woff2 (disarankan) atau .woff ke Media, lalu pilih di sini.
+       */
+      file?: (number | null) | Media;
+    };
+  };
+  /**
    * Semua opsional. Kosong = otomatis dari konten.
    */
   seo?: {
@@ -2044,6 +2120,24 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         tagline?: T;
       };
   instagramUrl?: T;
+  typography?:
+    | T
+    | {
+        body?:
+          | T
+          | {
+              source?: T;
+              googleFamily?: T;
+              file?: T;
+            };
+        heading?:
+          | T
+          | {
+              source?: T;
+              googleFamily?: T;
+              file?: T;
+            };
+      };
   seo?:
     | T
     | {

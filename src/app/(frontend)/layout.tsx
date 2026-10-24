@@ -4,6 +4,7 @@ import { SITE_URL } from '@/lib/seo'
 import { PageViewTracker } from '@/components/analytics/PageViewTracker'
 import { MotionProvider } from '@/components/motion/MotionProvider'
 import { SiteFooter } from '@/components/site/SiteFooter'
+import { SiteFonts } from '@/components/site/SiteFonts'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { getSiteSettings } from '@/content/site'
 import './styles.css'
@@ -39,10 +40,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  const { siteName, logo, navigation, instagramUrl, photoSwipe } = await getSiteSettings()
+  const { siteName, logo, navigation, instagramUrl, photoSwipe, fonts } = await getSiteSettings()
 
   return (
     <html lang="en" className={poppins.variable}>
+      <head>
+        <SiteFonts fonts={fonts} />
+      </head>
       <body className="relative flex min-h-screen flex-col">
         <MotionProvider />
         <PageViewTracker />

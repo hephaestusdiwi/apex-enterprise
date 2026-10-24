@@ -1,3 +1,4 @@
+import { EditorChecklist as EditorChecklist_9b8d6f2c3cb7d6f58c1cb3075a96c8fa } from '../../../components/admin/EditorChecklist'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -17,14 +18,13 @@ import { HeadingFeatureClient as HeadingFeatureClient_e70f5e05f09f93e00b997edb1e
 import { ParagraphFeatureClient as ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { PreviewCell as PreviewCell_146ba935973cec7c2712eed4177c35c6 } from '../../../components/admin/PreviewCell'
 import { EditorialPanel as EditorialPanel_29991eab6d30e0273ca21263c97b37f3 } from '../../../components/admin/EditorialPanel'
-import { EditorChecklist as EditorChecklist_a3c1d8e5f2b94706b1d7e0c9f4a85b62 } from '../../../components/admin/EditorChecklist'
-import { StatusCell as StatusCell_b7d2e4f1a9c3485d8e6f0a1b2c3d4e5f } from '../../../components/admin/StatusCell'
-import { ContactSummary as ContactSummary_c8e3f5a2b0d4596e9f7a1b2c3d4e5f60 } from '../../../components/admin/ContactSummary'
-import { BookingSummary as BookingSummary_d9f4a6b3c1e5607fa08b2c3d4e5f6071 } from '../../../components/admin/BookingSummary'
-import { BookingsToolbar as BookingsToolbar_e0a5b7c4d2f6718ab19c3d4e5f607182 } from '../../../components/admin/BookingsToolbar'
 import { PreviewButton as PreviewButton_5f32e6dab79a8c9d0707d0d5893b327a } from '../../../components/admin/PreviewButton'
+import { ContactSummary as ContactSummary_1b69888d9bea1072d28433e527918c7c } from '../../../components/admin/ContactSummary'
+import { StatusCell as StatusCell_4da1f90de99340c8531cff72a46c36b2 } from '../../../components/admin/StatusCell'
 import { ContactsToolbar as ContactsToolbar_9fff3ab9b47e7e3f98d1e51327fb46bd } from '../../../components/admin/ContactsToolbar'
 import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
+import { BookingSummary as BookingSummary_c7475cdc7ef61f2f5d2edf3d292d125e } from '../../../components/admin/BookingSummary'
+import { BookingsToolbar as BookingsToolbar_3fd1ab27b77b2e0eccec840201bc26b5 } from '../../../components/admin/BookingsToolbar'
 import { EditorialQueue as EditorialQueue_dc68164c24f9d8e3fd84a8515eda7a25 } from '../../../components/admin/EditorialQueue'
 import { BookingQueue as BookingQueue_a8adfb8ec6eb7222de9eca19387906f2 } from '../../../components/admin/BookingQueue'
 import { NewMessagesLink as NewMessagesLink_caf0c5707b208da91e132fa072fbb848 } from '../../../components/admin/NewMessagesLink'
@@ -35,6 +35,7 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 
 /** @type import('payload').ImportMap */
 export const importMap = {
+  "/components/admin/EditorChecklist#EditorChecklist": EditorChecklist_9b8d6f2c3cb7d6f58c1cb3075a96c8fa,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -54,14 +55,13 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ParagraphFeatureClient": ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/admin/PreviewCell#PreviewCell": PreviewCell_146ba935973cec7c2712eed4177c35c6,
   "/components/admin/EditorialPanel#EditorialPanel": EditorialPanel_29991eab6d30e0273ca21263c97b37f3,
-  "/components/admin/EditorChecklist#EditorChecklist": EditorChecklist_a3c1d8e5f2b94706b1d7e0c9f4a85b62,
-  "/components/admin/StatusCell#StatusCell": StatusCell_b7d2e4f1a9c3485d8e6f0a1b2c3d4e5f,
-  "/components/admin/ContactSummary#ContactSummary": ContactSummary_c8e3f5a2b0d4596e9f7a1b2c3d4e5f60,
-  "/components/admin/BookingSummary#BookingSummary": BookingSummary_d9f4a6b3c1e5607fa08b2c3d4e5f6071,
-  "/components/admin/BookingsToolbar#BookingsToolbar": BookingsToolbar_e0a5b7c4d2f6718ab19c3d4e5f607182,
   "/components/admin/PreviewButton#PreviewButton": PreviewButton_5f32e6dab79a8c9d0707d0d5893b327a,
+  "/components/admin/ContactSummary#ContactSummary": ContactSummary_1b69888d9bea1072d28433e527918c7c,
+  "/components/admin/StatusCell#StatusCell": StatusCell_4da1f90de99340c8531cff72a46c36b2,
   "/components/admin/ContactsToolbar#ContactsToolbar": ContactsToolbar_9fff3ab9b47e7e3f98d1e51327fb46bd,
   "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
+  "/components/admin/BookingSummary#BookingSummary": BookingSummary_c7475cdc7ef61f2f5d2edf3d292d125e,
+  "/components/admin/BookingsToolbar#BookingsToolbar": BookingsToolbar_3fd1ab27b77b2e0eccec840201bc26b5,
   "/components/admin/EditorialQueue#EditorialQueue": EditorialQueue_dc68164c24f9d8e3fd84a8515eda7a25,
   "/components/admin/BookingQueue#BookingQueue": BookingQueue_a8adfb8ec6eb7222de9eca19387906f2,
   "/components/admin/NewMessagesLink#NewMessagesLink": NewMessagesLink_caf0c5707b208da91e132fa072fbb848,

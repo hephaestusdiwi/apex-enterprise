@@ -1,5 +1,6 @@
-import type { Media, Page, Post, PostCategory, Project, Video } from '@/payload-types'
+import type { Media, Page, Post, PostCategory, Project, SiteSetting, Video } from '@/payload-types'
 import { isAllowedEmbedUrl } from '@/lib/embed'
+import { DEFAULT_FONT, fontFormatOfMedia, isGoogleFontKey, safeFontUrl, type FontAsset, type FontChoice } from '@/lib/fonts'
 import { isSafeHref } from '@/lib/href'
 import { TEXT_COLOR_KEYS, TEXT_SIZE_KEYS } from '@/lib/richStyles'
 import { parseVideoUrl } from '@/lib/video'
@@ -198,6 +199,30 @@ const toVideoSource = (block: Extract<PayloadBlock, { blockType: 'video' }>): Vi
   }
   const parsed = block.url ? parseVideoUrl(block.url) : null
   return parsed ? { kind: 'embed', provider: parsed.provider, src: parsed.src } : null
+}
+
+// --- Font
+
+/** Hanya file font .woff2/.woff yang konsisten (ekstensi + MIME) dan ber-URL lokal yang aman. */
+export const toFontAsset = (value: number | Media | null | undefined): FontAsset | null => {
+  if (!value || typeof value !== 'object') return null
+  const format = fontFormatOfMedia(value)
+  const src = safeFontUrl(value.url)
+  return format && src ? { src, format } : null
+}
+
+type FontGroup = NonNullable<NonNullable<SiteSetting['typography']>['body']>
+
+/** Pilihan admin -> font yang dipakai. Kosong, tidak lengkap, atau tidak valid = tampilan bawaan. */
+export const toFontChoice = (group: FontGroup | null | undefined): FontChoice => {
+  if (group?.source === 'google') {
+    return isGoogleFontKey(group.googleFamily) ? { source: 'google', key: group.googleFamily } : DEFAULT_FONT
+  }
+  if (group?.source === 'upload') {
+    const asset = toFontAsset(group.file)
+    return asset ? { source: 'upload', asset } : DEFAULT_FONT
+  }
+  return DEFAULT_FONT
 }
 
 // --- Block
