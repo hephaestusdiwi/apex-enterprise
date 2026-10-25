@@ -1,14 +1,14 @@
 /*
  * Tampilan editor APEX untuk koleksi Artikel (posts), Halaman (pages), Proyek (projects), Pesan Kontak (contacts),
- * dan Booking (bookings): form buat/edit dan halaman daftar. Khusus contacts dan bookings, lihat juga
+ * Booking (bookings), dan User (users): form buat/edit dan halaman daftar. Khusus contacts dan bookings, lihat juga
  * apex-records.scss. Semua aturan dibatasi ke koleksi tersebut, jadi layar admin lain tidak terpengaruh.
  * Mengikuti tema admin Payload (terang atau gelap).
  * Gaya bawaan Payload berada di @layer, sehingga aturan di file ini otomatis menang tanpa !important.
  * Diimpor dari custom.scss.
  */
 
-$edit-scope: '.collection-edit--posts, .collection-edit--pages, .collection-edit--projects, .collection-edit--contacts, .collection-edit--bookings';
-$list-scope: '.collection-list--posts, .collection-list--pages, .collection-list--projects, .collection-list--contacts, .collection-list--bookings';
+$edit-scope: '.collection-edit--posts, .collection-edit--pages, .collection-edit--projects, .collection-edit--contacts, .collection-edit--bookings, .collection-edit--users';
+$list-scope: '.collection-list--posts, .collection-list--pages, .collection-list--projects, .collection-list--contacts, .collection-list--bookings, .collection-list--users';
 $all-scope: '#{$edit-scope}, #{$list-scope}';
 
 /* ---------- Token warna ---------- */

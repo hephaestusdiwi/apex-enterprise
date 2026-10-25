@@ -40,6 +40,7 @@ services:
       HOSTNAME: "0.0.0.0"
       JOBS_AUTORUN: "true"
       SITE_URL: ${SITE_URL:-http://localhost:3001}
+      USER_INVITE_EXPIRY_HOURS: ${USER_INVITE_EXPIRY_HOURS:-72}
 
       DATABASE_URL: postgresql://apex_enterprise:${POSTGRES_PASSWORD:-devpass}@postgres:5432/apex_enterprise
       PAYLOAD_SECRET: ${PAYLOAD_SECRET:?Set PAYLOAD_SECRET in .env}

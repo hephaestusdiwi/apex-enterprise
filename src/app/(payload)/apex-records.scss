@@ -1,13 +1,13 @@
 /*
- * Tampilan untuk koleksi "record masuk": Pesan Kontak (contacts) dan Booking (bookings).
+ * Tampilan untuk koleksi "record masuk": Pesan Kontak (contacts), Booking (bookings), dan User (users).
  * Token warna, bingkai, tombol, tab, dan input dasar datang dari apex-editor.scss (scope-nya sudah mencakup
  * kedua koleksi ini). File ini menambah: chip status, toolbar filter berbentuk pil, kartu ringkasan di sidebar,
  * daftar berbentuk baris-kartu, dan form detail dalam satu kartu.
  * Diimpor dari custom.scss setelah apex-editor.
  */
 
-$record-edit-scope: '.collection-edit--contacts, .collection-edit--bookings';
-$record-list-scope: '.collection-list--contacts, .collection-list--bookings';
+$record-edit-scope: '.collection-edit--contacts, .collection-edit--bookings, .collection-edit--users';
+$record-list-scope: '.collection-list--contacts, .collection-list--bookings, .collection-list--users';
 $record-scope: '#{$record-edit-scope}, #{$record-list-scope}';
 
 /* ---------- Warna status ---------- */
@@ -369,5 +369,120 @@ html[data-theme='dark'] :is(#{$record-scope}) {
 @media (prefers-reduced-motion: reduce) {
   :is(#{$record-list-scope}) .table tbody td {
     transition: none;
+  }
+}
+
+/* ---------- User (UsersToolbar.tsx, UserAccountPanel.tsx) ---------- */
+
+:is(#{$record-list-scope}) {
+  .apex-toolbar-stack {
+    display: grid;
+    gap: 12px;
+    margin: 0 0 16px;
+
+    .apex-toolbar {
+      margin: 0;
+    }
+  }
+
+  .apex-invite {
+    display: grid;
+    gap: 14px;
+    padding: clamp(14px, 2vw, 20px);
+    border: 1px solid var(--ax-line);
+    border-radius: var(--ax-radius);
+    background: var(--ax-card);
+    box-shadow: var(--ax-shadow);
+  }
+
+  .apex-invite__hint {
+    margin: 0;
+    color: var(--ax-muted);
+    font-size: 13px;
+  }
+
+  .apex-invite__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .apex-invite__field {
+    display: grid;
+    gap: 4px;
+
+    span {
+      color: var(--ax-muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    input,
+    select {
+      padding: 10px 14px;
+      border: 1px solid var(--ax-line);
+      border-radius: 12px;
+      background: var(--ax-card-2);
+      color: var(--ax-text);
+      font: inherit;
+
+      &:focus-visible {
+        outline: 2px solid var(--ax-accent);
+        outline-offset: 1px;
+      }
+    }
+  }
+
+  .apex-invite__error {
+    margin: 0;
+    color: var(--ax-tone-danger);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .apex-invite__actions {
+    display: flex;
+    justify-content: flex-end;
+
+    .apex-pill--action {
+      margin-left: 0;
+    }
+  }
+}
+
+:is(#{$record-edit-scope}) {
+  .apex-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  button.apex-cta {
+    width: 100%;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+  }
+
+  .apex-cta--danger {
+    color: var(--ax-tone-danger);
+
+    &:hover:not(:disabled) {
+      border-color: var(--ax-tone-danger);
+      color: var(--ax-tone-danger);
+    }
+  }
+
+  .apex-summary__note {
+    margin: 0;
+    color: var(--ax-muted);
+    font-size: 12px;
+    line-height: 1.5;
   }
 }

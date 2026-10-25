@@ -169,7 +169,17 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  name?: string | null;
   role: 'admin' | 'editor';
+  status?: ('invited' | 'active' | 'disabled') | null;
+  invitedBy?: (number | null) | User;
+  invitedAt?: string | null;
+  inviteExpiresAt?: string | null;
+  activatedAt?: string | null;
+  roleChangedBy?: (number | null) | User;
+  roleChangedAt?: string | null;
+  disabledBy?: (number | null) | User;
+  disabledAt?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1195,7 +1205,17 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
   role?: T;
+  status?: T;
+  invitedBy?: T;
+  invitedAt?: T;
+  inviteExpiresAt?: T;
+  activatedAt?: T;
+  roleChangedBy?: T;
+  roleChangedAt?: T;
+  disabledBy?: T;
+  disabledAt?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

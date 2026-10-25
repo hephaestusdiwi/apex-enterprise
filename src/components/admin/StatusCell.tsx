@@ -32,6 +32,25 @@ const STATUS: Record<string, { label: string; tone: Tone }> = {
     },
     expired: {
         label: 'Kedaluwarsa', tone: 'muted'
+    },
+    // Users
+    invited: {
+        label: 'Diundang', tone: 'warn'
+    },
+    invite_expired: {
+        label: 'Undangan kedaluwarsa', tone: 'danger'
+    },
+    active: {
+        label: 'Aktif', tone: 'ok'
+    },
+    disabled: {
+        label: 'Nonaktif', tone: 'danger'
+    },
+    admin: {
+        label: 'Admin', tone: 'info'
+    },
+    editor: {
+        label: 'Editor', tone: 'muted'
     }
 }
 

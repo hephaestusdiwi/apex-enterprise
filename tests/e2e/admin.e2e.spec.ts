@@ -32,10 +32,19 @@ test.describe('Admin Panel', () => {
     await expect(listViewArtifact).toBeVisible()
   })
 
+  test('can open the invite form from the list view', async () => {
+    // User baru hanya lewat undangan email (tidak ada Create New dan tidak ada password sementara).
+    await page.goto('http://localhost:3000/admin/collections/users')
+    await page.getByRole('button', { name: 'Undang user' }).click()
+    await expect(page.locator('form[aria-label="Undang user"] input[name="email"]')).toBeVisible()
+    await expect(page.locator('input[name="password"]')).toHaveCount(0)
+  })
+
   test('can navigate to edit view', async () => {
-    await page.goto('http://localhost:3000/admin/collections/users/create')
+    await page.goto('http://localhost:3000/admin/collections/users')
+    await page.getByRole('link', { name: testUser.email }).first().click()
     await expect(page).toHaveURL(/\/admin\/collections\/users\/[a-zA-Z0-9-_]+/)
-    const editViewArtifact = page.locator('input[name="email"]')
-    await expect(editViewArtifact).toBeVisible()
+    await expect(page.locator('input[name="email"]')).toBeVisible()
+    await expect(page.locator('section[aria-label="Akun user"]')).toBeVisible()
   })
 })

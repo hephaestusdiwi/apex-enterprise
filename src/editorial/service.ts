@@ -91,7 +91,8 @@ export async function getSettings(payload: Payload): Promise<{ requireApproval: 
 async function loadStaff(payload: Payload): Promise<Map<string, Person & { role: Role }>> {
   const { docs } = await payload.find({
     collection: 'users',
-    where: { role: { in: ['admin', 'editor'] } },
+    // Hanya akun aktif yang bisa dipilih sebagai reviewer (bukan yang nonaktif atau belum menerima undangan).
+    where: { and: [{ role: { in: ['admin', 'editor'] } }, { status: { equals: 'active' } }] },
     limit: 500,
     depth: 0,
     pagination: false,

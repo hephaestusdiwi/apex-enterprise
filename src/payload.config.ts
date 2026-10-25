@@ -21,6 +21,7 @@ import { EditorialReviews } from './collections/EditorialReviews'
 import { EditorialNotes } from './collections/EditorialNotes'
 import { WorkflowSettings } from './globals/WorkflowSettings'
 import { editorialEndpoints } from './editorial/endpoints'
+import { userEndpoints } from './users/endpoints'
 import { ServicePackages } from './collections/ServicePackages'
 import { BookingSettings } from './globals/BookingSettings'
 import { BookingBlackouts } from './collections/BookingBlackouts'
@@ -62,7 +63,7 @@ export default buildConfig({
   },
   collections: [Users, Media, Videos, Projects, Pages, PostCategories, Posts, Contacts, Visits, EditorialReviews, EditorialNotes, ServicePackages, BookingBlackouts, Bookings],
   globals: [SiteSettings, ContactSettings, WorkflowSettings, BookingSettings],
-  endpoints: editorialEndpoints,
+  endpoints: [...editorialEndpoints, ...userEndpoints],
   jobs: {
     tasks: [expireBookingsTask, bookingRemindersTask],
     autoRun: [{ cron: '* * * * *', limit: 10, queue: 'default' }],
