@@ -2,6 +2,7 @@
 
 import { eq } from '@payloadcms/db-postgres/drizzle'
 import { useListQuery } from '@payloadcms/ui'
+import { FOLLOW_UP_OPTIONS } from '@/lib/followUp'
 
 type Condition = Record<string, Record<string, unknown>>
 
@@ -36,6 +37,16 @@ export function BookingsToolbar() {
     void refineListData({ where: next.length > 0 ? { and: next } : {}, page: 1 })
   }
 
+  const followUp = String(
+    (conditions.find((c) => 'followUp.status' in c)?.['followUp.status'] as { equals?: unknown } | undefined)?.equals ?? '',
+  )
+
+  const setFollowUp = (value: string) => {
+    const rest = without(conditions, 'followUp.status')
+    const next = value ? [...rest, { 'followUp.status': { equals: value } }] : rest
+    void refineListData({ where: next.length > 0 ? { and: next } : {}, page: 1 })
+  }
+
   return (
     <div className="apex-toolbar">
       <div role="group" aria-label="Filter status booking" className="apex-pills">
@@ -45,6 +56,15 @@ export function BookingsToolbar() {
           </button>
         ))}
       </div>
+
+      <select aria-label="Filter follow-up" className="apex-select" value={followUp} onChange={(e) => setFollowUp(e.target.value)}>
+        <option value="">Semua follow-up</option>
+        {FOLLOW_UP_OPTIONS.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
     </div>
   )
 }

@@ -681,6 +681,7 @@ export interface Page {
         | SpacerBlock
         | TitleSlotBlock
         | MetaSlotBlock
+        | TeamBlock
       )[]
     | null;
   /**
@@ -704,6 +705,48 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamBlock".
+ */
+export interface TeamBlock {
+  title?: string | null;
+  subtitle?: string | null;
+  /**
+   * Tambahkan anggota satu per satu. Kalau daftar kosong, block ini tidak tampil di halaman.
+   */
+  members?:
+    | {
+        photo: number | Media;
+        name: string;
+        role: string;
+        /**
+         * Maksimal 280 karakter.
+         */
+        bio: string;
+        socials?:
+          | {
+              platform: 'linkedin' | 'instagram' | 'x' | 'github' | 'facebook' | 'youtube' | 'email' | 'website';
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Biarkan "default" kalau tidak perlu menimpa layout block ini.
+   */
+  layout?: {
+    width?: ('default' | 'narrow' | 'content' | 'wide' | 'full') | null;
+    spaceBefore?: ('default' | 'none' | 'sm' | 'md' | 'lg' | 'xl') | null;
+    spaceAfter?: ('default' | 'none' | 'sm' | 'md' | 'lg' | 'xl') | null;
+    motion?: ('default' | 'none' | 'reveal' | 'parallax') | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'team';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -799,6 +842,17 @@ export interface Contact {
   subject?: string | null;
   message: string;
   status: 'new' | 'read' | 'archived' | 'spam';
+  followUp?: {
+    /**
+     * Data masuk baru otomatis "Baru". Kosong berarti data lama yang belum diatur.
+     */
+    status?: ('new' | 'contacted' | 'deal' | 'dropped') | null;
+    /**
+     * Mis. sudah dihubungi lewat WhatsApp, menunggu jawaban.
+     */
+    notes?: string | null;
+    updatedAt?: string | null;
+  };
   /**
    * Skor 3 ke atas masuk karantina. Salah deteksi? Ubah status ke "Baru".
    */
@@ -965,6 +1019,17 @@ export interface Booking {
   status: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'completed' | 'expired' | 'spam';
   holdUntil?: string | null;
   reminderSentAt?: string | null;
+  followUp?: {
+    /**
+     * Data masuk baru otomatis "Baru". Kosong berarti data lama yang belum diatur.
+     */
+    status?: ('new' | 'contacted' | 'deal' | 'dropped') | null;
+    /**
+     * Mis. sudah dihubungi lewat WhatsApp, menunggu jawaban.
+     */
+    notes?: string | null;
+    updatedAt?: string | null;
+  };
   adminNote?: string | null;
   /**
    * Ikut terkirim di email saat status jadi Dikonfirmasi / Ditolak / Dibatalkan. Isi sebelum menyimpan perubahan status
@@ -1629,6 +1694,7 @@ export interface PagesSelect<T extends boolean = true> {
         spacer?: T | SpacerBlockSelect<T>;
         titleSlot?: T | TitleSlotBlockSelect<T>;
         metaSlot?: T | MetaSlotBlockSelect<T>;
+        team?: T | TeamBlockSelect<T>;
       };
   seo?:
     | T
@@ -1641,6 +1707,40 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamBlock_select".
+ */
+export interface TeamBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  members?:
+    | T
+    | {
+        photo?: T;
+        name?: T;
+        role?: T;
+        bio?: T;
+        socials?:
+          | T
+          | {
+              platform?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  layout?:
+    | T
+    | {
+        width?: T;
+        spaceBefore?: T;
+        spaceAfter?: T;
+        motion?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1702,6 +1802,13 @@ export interface ContactsSelect<T extends boolean = true> {
   subject?: T;
   message?: T;
   status?: T;
+  followUp?:
+    | T
+    | {
+        status?: T;
+        notes?: T;
+        updatedAt?: T;
+      };
   spamScore?: T;
   spamReasons?: T;
   ipHash?: T;
@@ -1819,6 +1926,13 @@ export interface BookingsSelect<T extends boolean = true> {
   status?: T;
   holdUntil?: T;
   reminderSentAt?: T;
+  followUp?:
+    | T
+    | {
+        status?: T;
+        notes?: T;
+        updatedAt?: T;
+      };
   adminNote?: T;
   statusNote?: T;
   spamScore?: T;

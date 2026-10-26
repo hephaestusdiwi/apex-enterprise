@@ -3,6 +3,7 @@ import { isAllowedEmbedUrl } from '@/lib/embed'
 import { DEFAULT_FONT, fontFormatOfMedia, isGoogleFontKey, safeFontUrl, type FontAsset, type FontChoice } from '@/lib/fonts'
 import { isSafeHref } from '@/lib/href'
 import { TEXT_COLOR_KEYS, TEXT_SIZE_KEYS } from '@/lib/richStyles'
+import { SOCIAL_LABELS, SOCIAL_PLATFORMS } from '@/lib/socials'
 import { parseVideoUrl } from '@/lib/video'
 import {
   EMBED_ASPECTS,
@@ -28,11 +29,14 @@ import {
   type RichInline,
   type RichList,
   type RichListItem,
+  type TeamMemberData,
+  type TeamSocialLink,
   type VideoAsset,
   type VideoSource,
 } from './types'
 
-type PayloadBlock = NonNullable<Project['blocks']>[number]
+/** Block Pages = block Project + block khusus halaman, jadi tipe ini mencakup semua block yang bisa dirender. */
+type PayloadBlock = NonNullable<Page['blocks']>[number]
 
 /** Data induk yang dibutuhkan block penanda (slot). */
 type BlockContext = { title: string; meta: ProjectMetaItem[] }
@@ -225,6 +229,36 @@ export const toFontChoice = (group: FontGroup | null | undefined): FontChoice =>
   return DEFAULT_FONT
 }
 
+// --- Team
+
+type PayloadTeam = Extract<PayloadBlock, { blockType: 'team' }>
+
+const toTeamSocials = (socials: NonNullable<PayloadTeam['members']>[number]['socials']): TeamSocialLink[] =>
+  (socials ?? []).flatMap((social): TeamSocialLink[] => {
+    const platform = pick(social.platform, SOCIAL_PLATFORMS)
+    const href = social.url?.trim()
+    // Cek ulang saat render: data lama/draft tidak boleh lolos hanya karena validasi admin.
+    return platform && href && isSafeHref(href) ? [{ platform, label: SOCIAL_LABELS[platform], href }] : []
+  })
+
+/** Anggota tanpa foto yang valid atau tanpa nama dilewati; bio, jabatan, dan tautan sosial boleh kosong. */
+const toTeamMembers = (block: PayloadTeam, blockId: string): TeamMemberData[] =>
+  (block.members ?? []).flatMap((member, index): TeamMemberData[] => {
+    const photo = toMedia(member.photo)
+    const name = member.name?.trim()
+    if (!photo || !name) return []
+    return [
+      {
+        id: member.id ?? `${blockId}-member-${index}`,
+        photo,
+        name,
+        role: member.role?.trim() ?? '',
+        bio: member.bio?.trim() ?? '',
+        socials: toTeamSocials(member.socials),
+      },
+    ]
+  })
+
 // --- Block
 
 const mapBlock = (block: PayloadBlock, index: number, ctx: BlockContext): BlockData | null => {
@@ -295,6 +329,20 @@ const mapBlock = (block: PayloadBlock, index: number, ctx: BlockContext): BlockD
     }
     case 'spacer':
       return { type: 'spacer', id, layout, size: pick(block.size, ['sm', 'md', 'lg', 'xl'] as const) ?? 'md' }
+    case 'team': {
+      // Tanpa anggota yang bisa dirender, block dibuang supaya section kosong tidak muncul.
+      const members = toTeamMembers(block, id)
+      return members.length > 0
+        ? {
+            type: 'team',
+            id,
+            layout,
+            title: block.title?.trim() || undefined,
+            subtitle: block.subtitle?.trim() || undefined,
+            members,
+          }
+        : null
+    }
     case 'titleSlot':
       return { type: 'titleSlot', id, layout, title: ctx.title }
     case 'metaSlot': {
@@ -308,7 +356,7 @@ const mapBlock = (block: PayloadBlock, index: number, ctx: BlockContext): BlockD
   }
 }
 
-const mapBlocks = (blocks: Project['blocks'], ctx: BlockContext): BlockData[] =>
+const mapBlocks = (blocks: Page['blocks'], ctx: BlockContext): BlockData[] =>
   (blocks ?? [])
     .map((block, index) => mapBlock(block, index, ctx))
     .filter((block): block is BlockData => block !== null)

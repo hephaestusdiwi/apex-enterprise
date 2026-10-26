@@ -16,6 +16,7 @@ const GROUPS: Record<string, string> = {
   link: 'Lainnya',
   embed: 'Lainnya',
   spacer: 'Lainnya',
+  team: 'Lainnya',
   titleSlot: 'Penanda posisi',
   metaSlot: 'Penanda posisi',
 }
@@ -36,6 +37,7 @@ const GLYPHS: Record<string, string> = {
   embed: `<polyline points="50,28 36,40 50,52" fill="none" stroke="${A}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="70,28 84,40 70,52" fill="none" stroke="${A}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="64" y1="26" x2="56" y2="54" stroke="${A}" stroke-width="4" stroke-linecap="round" opacity=".6"/>`,
   list: `<circle cx="32" cy="26" r="4" fill="${A}"/><rect x="44" y="23" width="48" height="6" rx="3" fill="${A}"/><circle cx="32" cy="40" r="4" fill="${A}" opacity=".7"/><rect x="44" y="37" width="40" height="6" rx="3" fill="${A}" opacity=".7"/><circle cx="32" cy="54" r="4" fill="${A}" opacity=".45"/><rect x="44" y="51" width="46" height="6" rx="3" fill="${A}" opacity=".45"/>`,
   spacer: `<path d="M52 30l8-8 8 8M52 50l8 8 8-8" fill="none" stroke="${A}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><line x1="60" y1="24" x2="60" y2="56" stroke="${A}" stroke-width="3" stroke-dasharray="3 5" opacity=".6"/>`,
+  team: `<circle cx="36" cy="30" r="7" fill="${A}"/><circle cx="60" cy="30" r="7" fill="${A}" opacity=".7"/><circle cx="84" cy="30" r="7" fill="${A}" opacity=".45"/><rect x="28" y="44" width="16" height="5" rx="2.5" fill="${A}" opacity=".6"/><rect x="52" y="44" width="16" height="5" rx="2.5" fill="${A}" opacity=".6"/><rect x="76" y="44" width="16" height="5" rx="2.5" fill="${A}" opacity=".6"/><rect x="30" y="54" width="12" height="4" rx="2" fill="${A}" opacity=".35"/><rect x="54" y="54" width="12" height="4" rx="2" fill="${A}" opacity=".35"/><rect x="78" y="54" width="12" height="4" rx="2" fill="${A}" opacity=".35"/>`,
   titleSlot: `${dashed}<rect x="28" y="26" width="64" height="12" rx="6" fill="${A}"/><rect x="28" y="46" width="34" height="6" rx="3" fill="${A}" opacity=".4"/>`,
   metaSlot: `${dashed}<rect x="28" y="24" width="18" height="6" rx="3" fill="${A}" opacity=".5"/><rect x="52" y="24" width="40" height="6" rx="3" fill="${A}"/><rect x="28" y="38" width="18" height="6" rx="3" fill="${A}" opacity=".5"/><rect x="52" y="38" width="32" height="6" rx="3" fill="${A}"/><rect x="28" y="52" width="18" height="6" rx="3" fill="${A}" opacity=".5"/><rect x="52" y="52" width="36" height="6" rx="3" fill="${A}"/>`,
 }

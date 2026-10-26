@@ -4,6 +4,7 @@ import { adminOnly, staffOnly } from '@/access'
 import { isYmd } from '@/lib/availability'
 import { guardStatusChange, type BookingStatus } from '@/lib/bookingGuards'
 import { sendClientMail, type ClientMailKind } from '@/lib/bookingMail'
+import { followUpField, stampFollowUp } from '@/fields/followUp'
 
 const ro = { readOnly: true }
 
@@ -29,7 +30,7 @@ export const Bookings: CollectionConfig = {
   defaultSort: '-createdAt',
   admin: {
     useAsTitle: 'code',
-    defaultColumns: ['code', 'packageTitle', 'date', 'name', 'status', 'createdAt'],
+    defaultColumns: ['code', 'packageTitle', 'date', 'name', 'status', 'followUp.status', 'createdAt'],
     listSearchableFields: ['code', 'name', 'email', 'phone', 'packageTitle'],
     components: {
       beforeListTable: ['/components/admin/BookingsToolbar#BookingsToolbar'],
@@ -42,7 +43,7 @@ export const Bookings: CollectionConfig = {
     update: staffOnly,
     delete: adminOnly,
   },
-  hooks: { beforeChange: [guardStatusChange], afterChange: [notifyStatusChange] },
+  hooks: { beforeChange: [guardStatusChange, stampFollowUp], afterChange: [notifyStatusChange] },
   fields: [
     {
       // Kartu ringkasan di sidebar (tidak punya kolom database).
@@ -101,6 +102,7 @@ export const Bookings: CollectionConfig = {
       label: 'Reminder H-1 terkirim',
       admin: { position: 'sidebar', readOnly: true, date: { pickerAppearance: 'dayAndTime' } },
     },
+    followUpField(),
     { name: 'adminNote', type: 'textarea', label: 'Catatan internal', admin: { position: 'sidebar' } },
     {
       name: 'statusNote',

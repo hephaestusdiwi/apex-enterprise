@@ -1,5 +1,6 @@
 import type { CollectionAfterChangeHook, CollectionConfig } from 'payload'
 import { adminOnly, staffOnly } from '../access'
+import { followUpField, stampFollowUp } from '../fields/followUp'
 
 const escapeHtml = (value: string): string =>
   value
@@ -62,7 +63,7 @@ export const Contacts: CollectionConfig = {
   labels: { singular: 'Pesan Kontak', plural: 'Pesan Kontak' },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'email', 'subject', 'status', 'createdAt'],
+    defaultColumns: ['name', 'email', 'subject', 'status', 'followUp.status', 'createdAt'],
     listSearchableFields: ['name', 'email', 'subject', 'message'],
     components: {
       beforeListTable: ['/components/admin/ContactsToolbar#ContactsToolbar'],
@@ -77,6 +78,7 @@ export const Contacts: CollectionConfig = {
     delete: adminOnly,
   },
   hooks: {
+    beforeChange: [stampFollowUp],
     afterChange: [notifyNewContact],
   },
   fields: [
@@ -104,6 +106,7 @@ export const Contacts: CollectionConfig = {
       ],
       admin: { position: 'sidebar', components: { Cell: '/components/admin/StatusCell#StatusCell' } },
     },
+    followUpField(),
     {
       name: 'spamScore',
       type: 'number',

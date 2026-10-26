@@ -1,4 +1,5 @@
 import type { TextColor, TextSize } from '@/lib/richStyles'
+import type { SocialPlatform } from '@/lib/socials'
 
 export const WIDTHS = ['narrow', 'content', 'wide', 'full'] as const
 export const SPACES = ['none', 'sm', 'md', 'lg', 'xl'] as const
@@ -124,6 +125,21 @@ export type SpacerBlockData = BlockBase & {
   type: 'spacer'
   size: Exclude<Space, 'none'>
 }
+export type TeamSocialLink = { platform: SocialPlatform; label: string; href: string }
+export type TeamMemberData = {
+  id: string
+  photo: MediaAsset
+  name: string
+  role: string
+  bio: string
+  socials: TeamSocialLink[]
+}
+export type TeamBlockData = BlockBase & {
+  type: 'team'
+  title?: string
+  subtitle?: string
+  members: TeamMemberData[]
+}
 export type TitleSlotBlockData = BlockBase & {
   type: 'titleSlot'
   title: string
@@ -145,6 +161,7 @@ export type BlockData =
   | EmbedBlockData
   | ListBlockData
   | SpacerBlockData
+  | TeamBlockData
   | TitleSlotBlockData
   | MetaSlotBlockData
 export type BlockType = BlockData['type']

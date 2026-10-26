@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { adminOnly, publishedOrStaff, staffOnly } from '../access'
-import { projectBlocks } from '../blocks'
+import { pageBlocks } from '../blocks'
 import { validateSlots } from '../blocks/Slots'
 import { slugField } from '../fields/slug'
 import { previewLinkEndpoint } from '../preview/endpoint'
@@ -62,7 +62,7 @@ export const Pages: CollectionConfig = {
           label: 'Isi halaman',
           description: 'Susun isi halaman dari blok. Klik "Add" lalu pilih jenis blok yang dibutuhkan.',
           fields: [
-            { name: 'blocks', type: 'blocks', label: 'Isi halaman', blocks: projectBlocks, validate: validateSlots },
+            { name: 'blocks', type: 'blocks', label: 'Isi halaman', blocks: pageBlocks, validate: validateSlots },
           ],
         },
         {

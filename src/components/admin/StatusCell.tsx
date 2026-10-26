@@ -33,6 +33,16 @@ const STATUS: Record<string, { label: string; tone: Tone }> = {
     expired: {
         label: 'Kedaluwarsa', tone: 'muted'
     },
+    // Follow-up prospek (nilai 'new' memakai label Baru di atas)
+    contacted: {
+        label: 'Dihubungi', tone: 'info'
+    },
+    deal: {
+        label: 'Deal', tone: 'ok'
+    },
+    dropped: {
+        label: 'Tidak lanjut', tone: 'muted'
+    },
     // Users
     invited: {
         label: 'Diundang', tone: 'warn'

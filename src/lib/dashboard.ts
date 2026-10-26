@@ -1,5 +1,8 @@
 import type { Payload } from 'payload'
 import type { Media, Project } from '@/payload-types'
+import { addDays, todayInJakarta } from '@/lib/availability'
+import { formatDateShort } from '@/lib/dateFormat'
+import type { FollowUpStatus } from '@/lib/followUp'
 import { STATS_TZ } from '@/lib/trafficStats'
 
 /**
@@ -14,6 +17,11 @@ import { STATS_TZ } from '@/lib/trafficStats'
 const PROJECT_LIMIT = 13
 const PAGE_LIMIT = 5
 const MESSAGE_LIMIT = 5
+const BOOKING_LIMIT = 5
+/** Booking dianggap "baru" kalau masuk dalam rentang ini. */
+const FRESH_BOOKING_HOURS = 24
+/** Jadwal mendatang = booking dikonfirmasi dari hari ini sampai sekian hari ke depan. */
+export const UPCOMING_BOOKING_DAYS = 7
 
 type DashboardUser = Record<string, unknown> & { id: number | string }
 
@@ -58,6 +66,33 @@ export type DashboardMessage = {
   createdAt: string
 }
 
+export type DashboardBooking = {
+  id: number
+  code: string
+  name: string
+  packageTitle: string | null
+  /** YYYY-MM-DD (WIB) */
+  date: string
+  createdAt: string
+}
+
+export type DashboardBookings = {
+  /** Booking yang masuk dalam FRESH_BOOKING_HOURS jam terakhir (spam tidak dihitung). */
+  fresh: { total: number; since: string }
+  /** Menunggu konfirmasi: status pending, yang tanggalnya paling dekat di atas. */
+  pending: { items: DashboardBooking[]; total: number }
+  /** Sudah dikonfirmasi dan tanggalnya dalam UPCOMING_BOOKING_DAYS hari ke depan. */
+  upcoming: { items: DashboardBooking[]; total: number }
+  /** Tanggal hari ini (WIB), dipakai untuk label "Hari ini" / "Besok". */
+  today: string
+}
+
+export type DashboardFollowUp = {
+  /** Belum dihubungi (status follow-up "Baru") dan sedang berjalan ("Dihubungi"), per sumber prospek. */
+  contacts: { fresh: number; contacted: number }
+  bookings: { fresh: number; contacted: number }
+}
+
 export type DashboardData = {
   projects: {
     recent: DashboardProject[]
@@ -66,6 +101,8 @@ export type DashboardData = {
   } | null
   pages: { recent: DashboardPage[]; total: number } | null
   messages: { recent: DashboardMessage[]; unread: number } | null
+  bookings: DashboardBookings | null
+  followUp: DashboardFollowUp | null
 }
 
 const toStatus = (value: unknown): DashboardStatus => (value === 'published' ? 'published' : 'draft')
@@ -121,6 +158,12 @@ export const excerpt = (value: string, max = 96): string => {
   return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text
 }
 
+/** Prospek yang masih dianggap aktif: pesan yang belum diarsipkan/spam, booking yang belum selesai/ditolak/batal. */
+export const FOLLOW_UP_SOURCE_STATUSES = {
+  contacts: ['new', 'read'],
+  bookings: ['pending', 'confirmed'],
+} as const
+
 /** Jalankan satu bagian dashboard; kegagalan satu bagian tidak menjatuhkan seluruh halaman. */
 async function safe<T>(payload: Payload, label: string, run: () => Promise<T>): Promise<T | null> {
   try {
@@ -139,10 +182,14 @@ async function safe<T>(payload: Payload, label: string, run: () => Promise<T>): 
  *   perubahan belum dipublikasikan.
  * - Contacts: hanya pesan berstatus "new". Akses `read` Contacts khusus staff.
  */
-export async function getDashboardData(payload: Payload, user: DashboardUser): Promise<DashboardData> {
+export async function getDashboardData(
+  payload: Payload,
+  user: DashboardUser,
+  now: Date = new Date(),
+): Promise<DashboardData> {
   const access = { user, overrideAccess: false } as const
 
-  const [projects, pages, messages] = await Promise.all([
+  const [projects, pages, messages, bookings, followUp] = await Promise.all([
     safe(payload, 'proyek', async () => {
       const [recent, drafts] = await Promise.all([
         payload.find({
@@ -220,9 +267,84 @@ export async function getDashboardData(payload: Payload, user: DashboardUser): P
         unread: result.totalDocs,
       }
     }),
+
+    safe(payload, 'booking', async () => {
+      const today = todayInJakarta(now)
+      const since = new Date(now.getTime() - FRESH_BOOKING_HOURS * 3_600_000).toISOString()
+      const list = {
+        collection: 'bookings',
+        sort: 'date',
+        limit: BOOKING_LIMIT,
+        depth: 0,
+        select: { code: true, name: true, packageTitle: true, date: true, createdAt: true },
+        ...access,
+      } as const
+
+      const [fresh, pending, upcoming] = await Promise.all([
+        payload.count({
+          collection: 'bookings',
+          where: { and: [{ createdAt: { greater_than_equal: since } }, { status: { not_equals: 'spam' } }] },
+          ...access,
+        }),
+        payload.find({ ...list, where: { status: { equals: 'pending' } } }),
+        payload.find({
+          ...list,
+          where: {
+            and: [
+              { status: { equals: 'confirmed' } },
+              { date: { greater_than_equal: today } },
+              { date: { less_than_equal: addDays(today, UPCOMING_BOOKING_DAYS) } },
+            ],
+          },
+        }),
+      ])
+
+      const toBooking = (doc: (typeof pending.docs)[number]): DashboardBooking => ({
+        id: doc.id,
+        code: doc.code,
+        name: doc.name,
+        packageTitle: doc.packageTitle?.trim() || null,
+        date: doc.date,
+        createdAt: doc.createdAt,
+      })
+
+      return {
+        fresh: { total: fresh.totalDocs, since },
+        pending: { items: pending.docs.map(toBooking), total: pending.totalDocs },
+        upcoming: { items: upcoming.docs.map(toBooking), total: upcoming.totalDocs },
+        today,
+      }
+    }),
+
+    safe(payload, 'follow-up prospek', async () => {
+      const count = (collection: 'contacts' | 'bookings', followUpStatus: FollowUpStatus) =>
+        payload
+          .count({
+            collection,
+            where: {
+              and: [
+                { 'followUp.status': { equals: followUpStatus } },
+                { status: { in: [...FOLLOW_UP_SOURCE_STATUSES[collection]] } },
+              ],
+            },
+            ...access,
+          })
+          .then((result) => result.totalDocs)
+
+      const [contactsFresh, contactsContacted, bookingsFresh, bookingsContacted] = await Promise.all([
+        count('contacts', 'new'),
+        count('contacts', 'contacted'),
+        count('bookings', 'new'),
+        count('bookings', 'contacted'),
+      ])
+      return {
+        contacts: { fresh: contactsFresh, contacted: contactsContacted },
+        bookings: { fresh: bookingsFresh, contacted: bookingsContacted },
+      }
+    }),
   ])
 
-  return { projects, pages, messages }
+  return { projects, pages, messages, bookings, followUp }
 }
 
 /**
@@ -277,6 +399,13 @@ export const timeAgo = (iso: string, now: Date = new Date(), timeZone = STATS_TZ
   const days = Math.floor(hours / 24)
   if (days < 7) return `${days} hari lalu`
   return dateOnly(timeZone).format(then)
+}
+
+/** Label tanggal booking: "Hari ini", "Besok", atau mis. "Sel, 28 Okt". Semua dalam WIB (YYYY-MM-DD). */
+export const bookingDayLabel = (date: string, today: string): string => {
+  if (date === today) return 'Hari ini'
+  if (date === addDays(today, 1)) return 'Besok'
+  return formatDateShort(date)
 }
 
 export const fullDate = (iso: string, timeZone = STATS_TZ): string => {

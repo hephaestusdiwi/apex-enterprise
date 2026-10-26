@@ -10,6 +10,7 @@ import { ListView } from './ListView'
 import { MetaSlotView } from './MetaSlotView'
 import { QuoteView } from './QuoteView'
 import { SpacerView } from './SpacerView'
+import { TeamView } from './TeamView'
 import { TextView } from './TextView'
 import { TitleSlotView } from './TitleSlotView'
 import { VideoView } from './VideoView'
@@ -41,6 +42,7 @@ export const blockRegistry: { [T in BlockType]: BlockEntry<T> } = {
   embed: { Component: EmbedView, defaults: layout('wide', 'md') },
   list: { Component: ListView, defaults: layout('content', 'sm') },
   spacer: { Component: SpacerView, defaults: layout('content', 'none') },
+  team: { Component: TeamView, defaults: layout('wide', 'lg', 'reveal') },
   titleSlot: { Component: TitleSlotView, defaults: layout('wide', 'md') },
   metaSlot: { Component: MetaSlotView, defaults: layout('wide', 'sm') },
 }

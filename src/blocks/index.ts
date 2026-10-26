@@ -10,6 +10,7 @@ import { ListBlock } from './List'
 import { QuoteBlock } from './Quote'
 import { MetaSlotBlock, TitleSlotBlock } from './Slots'
 import { SpacerBlock } from './Spacer'
+import { TeamBlock } from './Team'
 import { TextBlock } from './Text'
 import { VideoBlock } from './Video'
 
@@ -28,6 +29,9 @@ export const projectBlocks: Block[] = [
   TitleSlotBlock,
   MetaSlotBlock,
 ].map(withBlockUi)
+
+/** Block khusus halaman (koleksi Pages): semua block project ditambah block yang hanya masuk akal di halaman biasa. */
+export const pageBlocks: Block[] = [...projectBlocks, withBlockUi(TeamBlock)]
 
 /** Block untuk artikel blog: sama dengan project, tanpa penanda title/meta (judul dirender header artikel). */
 const SLOT_BLOCKS: ReadonlySet<string> = new Set([TitleSlotBlock.slug, MetaSlotBlock.slug])

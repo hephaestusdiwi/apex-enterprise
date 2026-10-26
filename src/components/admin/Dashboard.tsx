@@ -16,6 +16,8 @@ import {
   type DashboardStatus,
 } from '@/lib/dashboard'
 import { publicPath } from '@/preview/urls'
+import { BookingPanel } from './BookingPanel'
+import { FollowUpPanel } from './FollowUpPanel'
 import { PreviewCell } from './PreviewCell'
 import { TrafficStats } from './TrafficStats'
 
@@ -239,6 +241,7 @@ export async function Dashboard(props: Props) {
       ? `${data.projects.total - data.projects.drafts} proyek terbit, ${data.projects.drafts} draft`
       : null,
     data.messages ? `${data.messages.unread} pesan baru` : null,
+    data.bookings ? `${data.bookings.pending.total} booking menunggu` : null,
   ].filter(Boolean)
 
   const shortcuts = [
@@ -325,6 +328,14 @@ export async function Dashboard(props: Props) {
           </div>
 
           <aside className="apex-dash__aside" aria-label="Ringkasan">
+            {can(permissions, 'bookings', 'read') ? <BookingPanel data={data.bookings} admin={admin} now={now} /> : null}
+            <FollowUpPanel
+              data={data.followUp}
+              admin={admin}
+              canContacts={can(permissions, 'contacts', 'read')}
+              canBookings={can(permissions, 'bookings', 'read')}
+            />
+
             <section className="apex-panel" aria-labelledby="apex-messages-title">
               <div className="apex-section__head">
                 <h2 id="apex-messages-title">
