@@ -24,6 +24,10 @@ const inlineText = (nodes: RichInline[]): string =>
             case 'text':
             case 'imageText':
                 return richText(block.content)
+            case 'scrollStory':
+                return block.preset === 'sticky'
+                    ? [block.title, ...block.panels.map((panel) => `${panel.title} ${richText(panel.content)}`)].join(' ')
+                    : `${block.title} ${richText(block.content)}`
             case 'heading':
             case 'quote':
                 return block.text

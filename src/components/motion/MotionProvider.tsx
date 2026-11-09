@@ -7,6 +7,7 @@ import 'lenis/dist/lenis.css'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { setupBlockMotion } from './blockMotion'
+import { setupStoryMotion } from './storyMotion'
 
 /** true selama pengguna TIDAK meminta reduced motion; ikut berubah kalau setting OS diubah. */
 function useMotionAllowed(): boolean {
@@ -49,7 +50,8 @@ export function MotionProvider() {
   // Animasi block dibangun ulang tiap pindah halaman.
   useEffect(() => {
     if (!allowed) return
-    return setupBlockMotion()
+    const cleanups = [setupBlockMotion(), setupStoryMotion()]
+    return () => cleanups.forEach((cleanup) => cleanup())
   }, [allowed, pathname])
 
   return null

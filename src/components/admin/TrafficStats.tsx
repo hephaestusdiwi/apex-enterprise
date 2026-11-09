@@ -91,7 +91,12 @@ export async function TrafficStats({ payload, user }: ServerProps) {
 
   return (
     <section style={{ marginBottom: 32, display: 'grid', gap: 12 }}>
-      <h2 style={{ margin: 0 }}>Traffic</h2>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12 }}>
+        <h2 style={{ margin: 0 }}>Traffic</h2>
+        <a href={`${payload.config.routes.admin}/statistik`} style={{ ...label, textDecoration: 'underline' }}>
+          Statistik lengkap →
+        </a>
+      </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: gridCols, gap: 12 }}>
         <Card title="Hari ini" days={days.slice(-1)} />

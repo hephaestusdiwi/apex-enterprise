@@ -5,6 +5,7 @@ import { submitBooking, type BookingField } from '@/app/(frontend)/booking/actio
 import type { PublicDay } from '@/app/(frontend)/booking/availability'
 import type { PackageItem } from '@/content/packages'
 import { BookingCalendar } from '@/components/booking/BookingCalendar'
+import { trackVirtualPageview } from '@/components/analytics/trackVirtualPageview'
 import { formatDateId } from '@/lib/dateFormat'
 import { priceLabel } from '@/lib/price'
 
@@ -71,6 +72,7 @@ export function BookingWizard({ packages, token, preselectId, initialMonth, init
             if (res.ok && res.code) {
                 setCode(res.code)
                 setDoneStatus(res.status ?? 'pending')
+                trackVirtualPageview('/booking/berhasil')
                 return
             }
             setErrors(res.errors ?? {})

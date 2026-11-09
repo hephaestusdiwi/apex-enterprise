@@ -1,5 +1,7 @@
 @use './apex-editor';
 @use './apex-records';
+@use './apex-nav';
+@use './apex-stats';
 
 /*
  * Dashboard admin APEX (src/components/admin/Dashboard.tsx).
@@ -106,9 +108,8 @@
     justify-content: center;
     gap: 8px;
     min-height: 40px;
-    padding: 0 18px;
-    border: 1px solid var(--apex-border);
-    border-radius: 999px;
+    padding: 0 25px;
+    border-radius: 18px;
     background: var(--apex-surface-2);
     color: var(--apex-text);
     font: inherit;
@@ -354,16 +355,16 @@
   /* Grid kartu proyek */
   .apex-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
     gap: 14px;
   }
 
   .apex-card {
     position: relative;
     display: block;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 6 / 4;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--apex-surface-2);
     transition: transform 0.2s, border-color 0.2s;
 
@@ -379,7 +380,7 @@
     inset: 0;
     display: grid;
     place-items: center;
-    background: linear-gradient(135deg, #20242c 0%, #15171c 100%);
+    background: linear-gradient(135deg, #20242c 0%, #333 100%);
     color: var(--apex-muted);
 
     svg {
@@ -391,7 +392,7 @@
   .apex-card__shade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(8, 9, 11, 0.92) 0%, rgba(8, 9, 11, 0) 60%);
+    background: linear-gradient(to top, rgba(8, 9, 11, 0.92) 0%, rgba(8, 9, 11, 0) 80%);
   }
 
   .apex-card__badges {

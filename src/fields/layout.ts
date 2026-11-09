@@ -9,7 +9,12 @@ const spacing = [
   { label: 'XL', value: 'xl' },
 ]
 
-export const layoutField = (): Field => ({
+type LayoutOptions = {
+  /** false = sembunyikan pilihan motion lama (reveal/parallax), untuk block yang punya pengaturan animasi sendiri. */
+  motion?: boolean
+}
+
+export const layoutField = ({ motion = true }: LayoutOptions = {}): Field => ({
   name: 'layout',
   type: 'group',
   label: 'Layout (opsional)',
@@ -22,7 +27,7 @@ export const layoutField = (): Field => ({
           name: 'width',
           type: 'select',
           defaultValue: 'default',
-          admin: { width: '25%' },
+          admin: { width: motion ? '25%' : '33%' },
           options: [
             { label: 'Default', value: 'default' },
             { label: 'Narrow', value: 'narrow' },
@@ -35,28 +40,32 @@ export const layoutField = (): Field => ({
           name: 'spaceBefore',
           type: 'select',
           defaultValue: 'default',
-          admin: { width: '25%' },
+          admin: { width: motion ? '25%' : '33%' },
           options: spacing,
         },
         {
           name: 'spaceAfter',
           type: 'select',
           defaultValue: 'default',
-          admin: { width: '25%' },
+          admin: { width: motion ? '25%' : '33%' },
           options: spacing,
         },
-        {
-          name: 'motion',
-          type: 'select',
-          defaultValue: 'default',
-          admin: { width: '25%' },
-          options: [
-            { label: 'Default', value: 'default' },
-            { label: 'None', value: 'none' },
-            { label: 'Reveal', value: 'reveal' },
-            { label: 'Parallax', value: 'parallax' },
-          ],
-        },
+        ...(motion
+          ? [
+              {
+                name: 'motion',
+                type: 'select' as const,
+                defaultValue: 'default',
+                admin: { width: '25%' },
+                options: [
+                  { label: 'Default', value: 'default' },
+                  { label: 'None', value: 'none' },
+                  { label: 'Reveal', value: 'reveal' },
+                  { label: 'Parallax', value: 'parallax' },
+                ],
+              },
+            ]
+          : []),
       ],
     },
   ],

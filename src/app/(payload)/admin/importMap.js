@@ -28,12 +28,12 @@ import { ContactsToolbar as ContactsToolbar_9fff3ab9b47e7e3f98d1e51327fb46bd } f
 import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { BookingSummary as BookingSummary_c7475cdc7ef61f2f5d2edf3d292d125e } from '../../../components/admin/BookingSummary'
 import { BookingsToolbar as BookingsToolbar_3fd1ab27b77b2e0eccec840201bc26b5 } from '../../../components/admin/BookingsToolbar'
+import { AdminNav as AdminNav_231477f0faa4368be46fd47ffb9da4d9 } from '../../../components/admin/AdminNav'
 import { EditorialQueue as EditorialQueue_dc68164c24f9d8e3fd84a8515eda7a25 } from '../../../components/admin/EditorialQueue'
 import { BookingQueue as BookingQueue_a8adfb8ec6eb7222de9eca19387906f2 } from '../../../components/admin/BookingQueue'
-import { NewMessagesLink as NewMessagesLink_caf0c5707b208da91e132fa072fbb848 } from '../../../components/admin/NewMessagesLink'
-import { BookingNavLinks as BookingNavLinks_09eeabd674be9acaac8e5be33b3de5c4 } from '../../../components/admin/BookingNavLinks'
 import { Dashboard as Dashboard_16b88e9b8c48e393fa86591406efd08f } from '../../../components/admin/Dashboard'
 import { BookingCalendarView as BookingCalendarView_a1fd4ab6f511d99334f043232b0aef3f } from '../../../components/admin/BookingCalendarView'
+import { VisitorStatsView as VisitorStatsView_a0e0dc2caa87ef02ccabb554bb70ff70 } from '../../../components/admin/stats/VisitorStatsView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -68,11 +68,11 @@ export const importMap = {
   "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
   "/components/admin/BookingSummary#BookingSummary": BookingSummary_c7475cdc7ef61f2f5d2edf3d292d125e,
   "/components/admin/BookingsToolbar#BookingsToolbar": BookingsToolbar_3fd1ab27b77b2e0eccec840201bc26b5,
+  "/components/admin/AdminNav#AdminNav": AdminNav_231477f0faa4368be46fd47ffb9da4d9,
   "/components/admin/EditorialQueue#EditorialQueue": EditorialQueue_dc68164c24f9d8e3fd84a8515eda7a25,
   "/components/admin/BookingQueue#BookingQueue": BookingQueue_a8adfb8ec6eb7222de9eca19387906f2,
-  "/components/admin/NewMessagesLink#NewMessagesLink": NewMessagesLink_caf0c5707b208da91e132fa072fbb848,
-  "/components/admin/BookingNavLinks#BookingNavLinks": BookingNavLinks_09eeabd674be9acaac8e5be33b3de5c4,
   "/components/admin/Dashboard#Dashboard": Dashboard_16b88e9b8c48e393fa86591406efd08f,
   "/components/admin/BookingCalendarView#BookingCalendarView": BookingCalendarView_a1fd4ab6f511d99334f043232b0aef3f,
+  "/components/admin/stats/VisitorStatsView#VisitorStatsView": VisitorStatsView_a0e0dc2caa87ef02ccabb554bb70ff70,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

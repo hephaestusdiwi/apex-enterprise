@@ -11,7 +11,12 @@ import {
   HOME_ALIGNS,
   HOME_SIZES,
   MOTIONS,
+  SIDES,
   SPACES,
+  STORY_ANIMATIONS,
+  STORY_OVERLAYS,
+  STORY_PRESETS,
+  STORY_TEXT_POSITIONS,
   WIDTHS,
   SeoData,
   type BlockData,
@@ -29,6 +34,9 @@ import {
   type RichInline,
   type RichList,
   type RichListItem,
+  type ScrollStoryPanelData,
+  type StoryAnimation,
+  type StoryPreset,
   type TeamMemberData,
   type TeamSocialLink,
   type VideoAsset,
@@ -47,7 +55,15 @@ const pick = <T extends string>(
   allowed: readonly T[],
 ): T | undefined => allowed.find((item) => item === value)
 
-const toLayout = (layout: PayloadBlock['layout']): BlockLayout => ({
+/** Bentuk layout di Payload; block dengan animasi sendiri (scrollStory) tidak punya `motion`. */
+type PayloadLayout = {
+  width?: string | null
+  spaceBefore?: string | null
+  spaceAfter?: string | null
+  motion?: string | null
+}
+
+const toLayout = (layout: PayloadLayout | undefined): BlockLayout => ({
   width: pick(layout?.width, WIDTHS),
   spaceBefore: pick(layout?.spaceBefore, SPACES),
   spaceAfter: pick(layout?.spaceAfter, SPACES),
@@ -259,6 +275,75 @@ const toTeamMembers = (block: PayloadTeam, blockId: string): TeamMemberData[] =>
     ]
   })
 
+// --- Cerita Scroll
+
+type PayloadStory = Extract<PayloadBlock, { blockType: 'scrollStory' }>
+
+/** Pilihan "Otomatis" di CMS: animasi yang paling cocok untuk tiap tampilan. */
+const AUTO_ANIMATION: Record<StoryPreset, StoryAnimation> = {
+  cinematic: 'zoom',
+  split: 'fade',
+  sticky: 'zoom',
+}
+
+const toStoryAnimation = (value: string | null | undefined, preset: StoryPreset): StoryAnimation =>
+  pick(value, STORY_ANIMATIONS) ?? AUTO_ANIMATION[preset]
+
+const toStoryPanels = (block: PayloadStory, blockId: string): ScrollStoryPanelData[] =>
+  (block.panels ?? []).flatMap((panel, index): ScrollStoryPanelData[] => {
+    const media = toMedia(panel.media)
+    const title = panel.title?.trim()
+    // Panel tanpa judul atau tanpa gambar yang valid dilewati supaya tidak ada langkah kosong.
+    if (!media || !title) return []
+    return [{ id: panel.id ?? `${blockId}-panel-${index}`, title, content: toRichBlocks(panel.body), media }]
+  })
+
+const mapScrollStory = (block: PayloadStory, id: string, layout: BlockLayout): BlockData | null => {
+  const title = block.title?.trim()
+  const preset = pick(block.preset, STORY_PRESETS)
+  if (!title || !preset) return null
+
+  const base = {
+    type: 'scrollStory' as const,
+    id,
+    layout,
+    eyebrow: block.eyebrow?.trim() || undefined,
+    title,
+    animation: toStoryAnimation(block.animation, preset),
+  }
+
+  switch (preset) {
+    case 'cinematic': {
+      const media = toMedia(block.media)
+      if (!media) return null
+      return {
+        ...base,
+        preset,
+        media,
+        video: toVideoAsset(block.video) ?? undefined,
+        content: toRichBlocks(block.body),
+        textPosition: pick(block.textPosition, STORY_TEXT_POSITIONS) ?? 'bottom',
+        overlay: pick(block.overlay, STORY_OVERLAYS) ?? 'medium',
+      }
+    }
+    case 'split': {
+      const media = toMedia(block.media)
+      if (!media) return null
+      return {
+        ...base,
+        preset,
+        media,
+        content: toRichBlocks(block.body),
+        mediaSide: pick(block.mediaSide, SIDES) ?? 'right',
+      }
+    }
+    case 'sticky': {
+      const panels = toStoryPanels(block, id)
+      return panels.length > 0 ? { ...base, preset, side: pick(block.stickySide, SIDES) ?? 'left', panels } : null
+    }
+  }
+}
+
 // --- Block
 
 const mapBlock = (block: PayloadBlock, index: number, ctx: BlockContext): BlockData | null => {
@@ -329,6 +414,8 @@ const mapBlock = (block: PayloadBlock, index: number, ctx: BlockContext): BlockD
     }
     case 'spacer':
       return { type: 'spacer', id, layout, size: pick(block.size, ['sm', 'md', 'lg', 'xl'] as const) ?? 'md' }
+    case 'scrollStory':
+      return mapScrollStory(block, id, layout)
     case 'team': {
       // Tanpa anggota yang bisa dirender, block dibuang supaya section kosong tidak muncul.
       const members = toTeamMembers(block, id)

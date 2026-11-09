@@ -37,6 +37,7 @@ export function PreviewCell({ rowData, collectionSlug }: Props) {
 
   return (
     <Button
+      className="apex-btn"
       aria-label="Preview"
       buttonStyle="pill"
       disabled={busy}

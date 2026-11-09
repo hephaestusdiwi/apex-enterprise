@@ -1,0 +1,481 @@
+/*
+ * Halaman Statistik Pengunjung (src/components/admin/stats/*).
+ * Memakai token tema Payload, jadi ikut mode terang/gelap. Warna sumber trafik sengaja dibedakan
+ * juga lewat label teks, bukan warna saja.
+ */
+
+.apex-stats {
+  --ast-accent: #c2540a;
+  --ast-line: var(--theme-elevation-100);
+  --ast-muted: var(--theme-elevation-600);
+  --ast-up: var(--theme-success-600, #1f7a3d);
+  --ast-down: var(--theme-error-600, #b3261e);
+
+  display: grid;
+  gap: 20px;
+  padding-block: 8px 48px;
+  color: var(--theme-text);
+
+  html[data-theme='dark'] & {
+    --ast-accent: #ff8a3d;
+    --ast-up: var(--theme-success-400, #6bd48a);
+    --ast-down: var(--theme-error-400, #ff8b84);
+  }
+}
+
+.apex-stats__title {
+  margin: 0 0 4px;
+}
+
+.apex-stats__muted {
+  color: var(--ast-muted);
+  font-size: 13px;
+}
+
+.apex-stats__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.apex-stats__empty {
+  margin: 0;
+  padding: 16px;
+  border: 1px dashed var(--theme-elevation-200);
+  border-radius: 8px;
+  color: var(--ast-muted);
+  font-size: 14px;
+
+  &--page {
+    background: var(--theme-elevation-50);
+  }
+}
+
+.apex-stats__note {
+  margin: 0;
+  color: var(--ast-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ---------- Filter ---------- */
+.apex-stats__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 20px;
+}
+
+.apex-stats__presets {
+  display: flex;
+  gap: 6px;
+}
+
+.apex-stats__pill,
+.apex-stats__seg {
+  padding: 6px 12px;
+  border: 1px solid var(--ast-line);
+  border-radius: 999px;
+  background: var(--theme-elevation-0);
+  color: var(--theme-elevation-800);
+  font-size: 13px;
+  line-height: 18px;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--theme-elevation-50);
+    color: var(--theme-text);
+  }
+
+  &[aria-current='true'] {
+    border-color: var(--theme-elevation-800);
+    background: var(--theme-elevation-800);
+    color: var(--theme-elevation-0);
+  }
+
+  &:focus-visible {
+    outline: var(--accessibility-outline);
+    outline-offset: 2px;
+  }
+}
+
+.apex-stats__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.apex-stats__field {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--ast-muted);
+
+  input,
+  select {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: 6px;
+    background: var(--theme-input-bg, var(--theme-elevation-0));
+    color: var(--theme-text);
+    font: inherit;
+    font-size: 13px;
+  }
+
+  &--page select {
+    min-width: 200px;
+    max-width: 280px;
+  }
+}
+
+.apex-stats__apply {
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--theme-elevation-800);
+  color: var(--theme-elevation-0);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.apex-stats__reset {
+  align-self: center;
+  color: var(--ast-muted);
+  font-size: 13px;
+}
+
+/* ---------- Kartu ringkasan ---------- */
+.apex-stats__kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.apex-stats__kpi {
+  padding: 14px 16px;
+  border: 1px solid var(--ast-line);
+  border-radius: 10px;
+  background: var(--theme-elevation-0);
+}
+
+.apex-stats__kpi-label {
+  margin: 0;
+  color: var(--ast-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.apex-stats__kpi-value {
+  margin: 4px 0 6px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.apex-stats__kpi-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin: 0;
+  font-size: 12px;
+}
+
+.apex-stats__delta {
+  font-weight: 600;
+  white-space: nowrap;
+
+  &--up {
+    color: var(--ast-up);
+  }
+
+  &--down {
+    color: var(--ast-down);
+  }
+
+  &--flat,
+  &--new {
+    color: var(--ast-muted);
+  }
+}
+
+/* ---------- Kartu umum ---------- */
+.apex-stats__card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--ast-line);
+  border-radius: 10px;
+  background: var(--theme-elevation-0);
+}
+
+.apex-stats__card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+
+  h2 {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.apex-stats__grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+/* ---------- Tren ---------- */
+.apex-stats__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.apex-stats__segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.apex-stats__seg--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.apex-stats__chart {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.apex-stats__grid {
+  stroke: var(--theme-elevation-100);
+  stroke-width: 1;
+}
+
+.apex-stats__axis {
+  fill: var(--ast-muted);
+  font-size: 11px;
+}
+
+.apex-stats__area {
+  fill: var(--ast-accent);
+  opacity: 0.1;
+}
+
+.apex-stats__line {
+  fill: none;
+  stroke: var(--ast-accent);
+  stroke-width: 2.25;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+
+  &--prev {
+    stroke: var(--theme-elevation-400);
+    stroke-width: 1.75;
+    stroke-dasharray: 5 4;
+  }
+}
+
+.apex-stats__dot {
+  fill: var(--theme-elevation-0);
+  stroke: var(--ast-accent);
+  stroke-width: 2;
+}
+
+.apex-stats__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--ast-muted);
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.apex-stats__swatch {
+  display: inline-block;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--ast-accent);
+
+  &--prev {
+    height: 0;
+    border-top: 2px dashed var(--theme-elevation-400);
+    border-radius: 0;
+    background: none;
+  }
+}
+
+/* ---------- Sumber trafik ---------- */
+.apex-stats__src--direct {
+  background: #5b6b8c;
+}
+.apex-stats__src--search {
+  background: #2f8f6b;
+}
+.apex-stats__src--social {
+  background: #c2540a;
+}
+.apex-stats__src--referral {
+  background: #8a5fc4;
+}
+
+.apex-stats__stack {
+  display: flex;
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--theme-elevation-100);
+}
+
+.apex-stats__stack-seg {
+  display: block;
+  height: 100%;
+}
+
+.apex-stats__sources {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+
+  li {
+    display: grid;
+    grid-template-columns: 12px 1fr auto 52px 64px;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+.apex-stats__src-name {
+  min-width: 0;
+}
+
+/* ---------- Funnel ---------- */
+.apex-stats__funnel {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.apex-stats__funnel-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  font-size: 14px;
+
+  strong {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.apex-stats__bar {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--theme-elevation-100);
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--ast-accent);
+  }
+}
+
+.apex-stats__funnel-foot {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+/* ---------- Tabel ---------- */
+.apex-stats__table-wrap {
+  overflow-x: auto;
+}
+
+.apex-stats__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th,
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--ast-line);
+    text-align: left;
+    vertical-align: baseline;
+  }
+
+  th {
+    color: var(--ast-muted);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  tbody tr:hover {
+    background: var(--theme-elevation-50);
+  }
+
+  tr[aria-selected='true'] {
+    background: var(--theme-elevation-100);
+  }
+}
+
+.apex-stats__num {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.apex-stats__page-link {
+  color: var(--theme-text);
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 768px) {
+  .apex-stats__kpi-value {
+    font-size: 24px;
+  }
+
+  .apex-stats__sources li {
+    grid-template-columns: 12px 1fr auto 44px;
+
+    > :last-child {
+      display: none;
+    }
+  }
+}

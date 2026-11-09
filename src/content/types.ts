@@ -6,12 +6,23 @@ export const SPACES = ['none', 'sm', 'md', 'lg', 'xl'] as const
 export const MOTIONS = ['none', 'reveal', 'parallax'] as const
 export const GALLERY_VARIANTS = ['grid-2', 'grid-3', 'staggered', 'strip', 'mosaic'] as const
 export const EMBED_ASPECTS = ['16-9', '4-3', '1-1', '21-9'] as const
+export const STORY_PRESETS = ['cinematic', 'split', 'sticky'] as const
+export const STORY_ANIMATIONS = ['none', 'fade', 'reveal', 'zoom', 'parallax'] as const
+export const STORY_TEXT_POSITIONS = ['bottom', 'center'] as const
+export const STORY_OVERLAYS = ['soft', 'medium', 'strong'] as const
+export const SIDES = ['left', 'right'] as const
 
 export type Width = (typeof WIDTHS)[number]
 export type Space = (typeof SPACES)[number]
 export type Motion = (typeof MOTIONS)[number]
 export type GalleryVariant = (typeof GALLERY_VARIANTS)[number]
 export type EmbedAspect = (typeof EMBED_ASPECTS)[number]
+export type StoryPreset = (typeof STORY_PRESETS)[number]
+/** Animasi yang sudah di-resolve ("auto" dari CMS diganti pilihan terbaik untuk preset-nya). */
+export type StoryAnimation = (typeof STORY_ANIMATIONS)[number]
+export type StoryTextPosition = (typeof STORY_TEXT_POSITIONS)[number]
+export type StoryOverlay = (typeof STORY_OVERLAYS)[number]
+export type Side = (typeof SIDES)[number]
 
 /** Override dari admin. Properti kosong = pakai default milik tipe block. */
 export type BlockLayout = {
@@ -140,6 +151,31 @@ export type TeamBlockData = BlockBase & {
   subtitle?: string
   members: TeamMemberData[]
 }
+export type ScrollStoryPanelData = {
+  id: string
+  title: string
+  content: RichBlock[]
+  media: MediaAsset
+}
+type ScrollStoryBase = BlockBase & {
+  type: 'scrollStory'
+  eyebrow?: string
+  title: string
+  animation: StoryAnimation
+}
+export type ScrollStoryBlockData = ScrollStoryBase &
+  (
+    | {
+        preset: 'cinematic'
+        media: MediaAsset
+        video?: VideoAsset
+        content: RichBlock[]
+        textPosition: StoryTextPosition
+        overlay: StoryOverlay
+      }
+    | { preset: 'split'; media: MediaAsset; content: RichBlock[]; mediaSide: Side }
+    | { preset: 'sticky'; side: Side; panels: ScrollStoryPanelData[] }
+  )
 export type TitleSlotBlockData = BlockBase & {
   type: 'titleSlot'
   title: string
@@ -161,6 +197,7 @@ export type BlockData =
   | EmbedBlockData
   | ListBlockData
   | SpacerBlockData
+  | ScrollStoryBlockData
   | TeamBlockData
   | TitleSlotBlockData
   | MetaSlotBlockData

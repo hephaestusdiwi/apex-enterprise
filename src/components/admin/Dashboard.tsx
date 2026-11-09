@@ -33,7 +33,7 @@ const can = (permissions: SanitizedPermissions | undefined, slug: string, action
 const canGlobal = (permissions: SanitizedPermissions | undefined, slug: string): boolean =>
   Boolean(permissions?.globals?.[slug]?.read)
 
-const STATUS_LABEL: Record<DashboardStatus, string> = { published: 'Terbit', draft: 'Draft' }
+const STATUS_LABEL: Record<DashboardStatus, string> = { published: 'Published', draft: 'Draft' }
 
 // --- Ikon kecil (dekoratif, disembunyikan dari screen reader) ---
 
@@ -140,7 +140,7 @@ function Hero({ project, admin, now }: { project: DashboardProject; admin: strin
       )}
 
       <div className="apex-hero__body">
-        <p className="apex-eyebrow">Terakhir diperbarui</p>
+        <p className="apex-eyebrow">Last Update</p>
         <h2 id="apex-hero-title" className="apex-hero__title">
           {project.title}
         </h2>
@@ -148,17 +148,17 @@ function Hero({ project, admin, now }: { project: DashboardProject; admin: strin
           <Chip status={project.status} />
           {project.hasVideo ? <VideoBadge /> : null}
           <time dateTime={project.updatedAt} title={fullDate(project.updatedAt)}>
-            Diperbarui {timeAgo(project.updatedAt, now)}
+            Terakhir update {timeAgo(project.updatedAt, now)}
           </time>
         </div>
         <div className="apex-hero__actions">
           <Link href={editHref} className="apex-btn apex-btn--primary">
-            Edit proyek
+            Edit project
           </Link>
           <PreviewCell rowData={{ id: project.id }} collectionSlug="projects" />
           {live ? (
             <a href={live} className="apex-btn" target="_blank" rel="noopener noreferrer">
-              Lihat di situs
+              Lihat di website
             </a>
           ) : null}
         </div>
@@ -267,7 +267,7 @@ export async function Dashboard(props: Props) {
             {canCreateProject ? (
               <Link href={`${admin}/collections/projects/create`} className="apex-btn apex-btn--primary">
                 <PlusIcon />
-                Tambah Proyek
+                Tambah Project
               </Link>
             ) : null}
             {canCreatePage ? (
@@ -294,7 +294,7 @@ export async function Dashboard(props: Props) {
                     <div className="apex-hero__actions">
                       <Link href={`${admin}/collections/projects/create`} className="apex-btn apex-btn--primary">
                         <PlusIcon />
-                        Tambah Proyek
+                        Tambah Project
                       </Link>
                     </div>
                   ) : null}
@@ -305,7 +305,7 @@ export async function Dashboard(props: Props) {
             {data.projects && rest.length > 0 ? (
               <section aria-labelledby="apex-projects-title">
                 <div className="apex-section__head">
-                  <h2 id="apex-projects-title">Proyek lainnya</h2>
+                  <h2 id="apex-projects-title">Project lainnya</h2>
                   {can(permissions, 'projects', 'read') ? (
                     <Link href={`${admin}/collections/projects`} className="apex-link">
                       Lihat semua ({data.projects.total})

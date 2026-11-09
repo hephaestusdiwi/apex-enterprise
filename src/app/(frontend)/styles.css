@@ -37,3 +37,31 @@
     color: var(--color-paper);
   }
 }
+
+/*
+ * Block "Cerita Scroll" (src/components/motion/storyMotion.ts).
+ * Menyembunyikan teks/media yang akan dianimasikan SEBELUM skrip jalan, supaya tidak terlihat sekejap lalu
+ * hilang dan muncul lagi. Hanya aktif bila JavaScript menyala DAN pengunjung tidak meminta reduced motion;
+ * tanpa itu semua konten tampil biasa. Kalau skrip gagal jalan, animasi fail-safe memunculkannya setelah 2,5 detik.
+ */
+@keyframes story-failsafe {
+  to {
+    opacity: 1;
+    clip-path: inset(0% 0% 0% 0%);
+  }
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-story]:not([data-story-ready]):not([data-story-anim='none']) [data-story-item],
+  [data-story]:not([data-story-ready])[data-story-anim='reveal'] [data-story-media] {
+    animation: story-failsafe 0.01s 2.5s forwards;
+  }
+
+  [data-story]:not([data-story-ready]):not([data-story-anim='none']) [data-story-item] {
+    opacity: 0;
+  }
+
+  [data-story]:not([data-story-ready])[data-story-anim='reveal'] [data-story-media] {
+    clip-path: inset(0% 0% 100% 0%);
+  }
+}

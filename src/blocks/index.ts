@@ -8,6 +8,7 @@ import { ImageTextBlock } from './ImageText'
 import { LinkBlock } from './Link'
 import { ListBlock } from './List'
 import { QuoteBlock } from './Quote'
+import { ScrollStoryBlock } from './ScrollStory'
 import { MetaSlotBlock, TitleSlotBlock } from './Slots'
 import { SpacerBlock } from './Spacer'
 import { TeamBlock } from './Team'
@@ -19,6 +20,7 @@ export const projectBlocks: Block[] = [
   TextBlock,
   ImageBlock,
   ImageTextBlock,
+  ScrollStoryBlock,
   GalleryBlock,
   VideoBlock,
   LinkBlock,

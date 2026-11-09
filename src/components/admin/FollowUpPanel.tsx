@@ -43,7 +43,7 @@ export function FollowUpPanel({ data, admin, canContacts, canBookings }: Props) 
     <section className="apex-panel" aria-labelledby="apex-followup-title">
       <div className="apex-section__head">
         <h2 id="apex-followup-title">
-          Follow-up prospek
+          Follow-up
           {needAction > 0 ? (
             <span className="apex-count" aria-label={`${needAction} belum dihubungi`}>
               {needAction > 99 ? '99+' : needAction}

@@ -15,6 +15,7 @@ import * as migration_20261020_174822_booking_reminder from './20261020_174822_b
 import * as migration_20261020_180010_blog_posts from './20261020_180010_blog_posts';
 import * as migration_20261023_103600_font_settings from './20261023_103600_font_settings';
 import * as migration_20261024_180418_users_invites from './20261024_180418_users_invites';
+import * as migration_20261027_223043_scroll_story from './20261027_223043_scroll_story';
 
 export const migrations = [
   {
@@ -100,6 +101,11 @@ export const migrations = [
   {
     up: migration_20261024_180418_users_invites.up,
     down: migration_20261024_180418_users_invites.down,
-    name: '20261024_180418_users_invites'
+    name: '20261024_180418_users_invites',
+  },
+  {
+    up: migration_20261027_223043_scroll_story.up,
+    down: migration_20261027_223043_scroll_story.down,
+    name: '20261027_223043_scroll_story'
   },
 ];

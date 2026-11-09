@@ -54,7 +54,8 @@ export function normalizePath(input: unknown): string | null {
   if (/^\/(admin|api|_next)(\/|$)/.test(path)) return null
   if (path.length > 1) path = path.replace(/\/+$/, '')
   // Halaman status booking membawa kode unik: gabungkan supaya statistik tidak penuh path unik.
-  path = path.replace(/^\/booking\/[^/]+$/, '/booking/[kode]')
+  // Pengecualian: /booking/berhasil adalah pageview virtual saat booking sukses (langkah akhir funnel statistik).
+  path = path.replace(/^\/booking\/(?!berhasil$)[^/]+$/, '/booking/[kode]')
   return path.slice(0, 200)
 }
 

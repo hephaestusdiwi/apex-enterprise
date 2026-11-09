@@ -307,6 +307,7 @@ export interface Project {
         | TextBlock
         | ImageBlock
         | ImageTextBlock
+        | ScrollStoryBlock
         | GalleryBlock
         | VideoBlock
         | LinkBlock
@@ -463,6 +464,106 @@ export interface ImageTextBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'imageText';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ScrollStoryBlock".
+ */
+export interface ScrollStoryBlock {
+  /**
+   * Sinematik: gambar/video layar penuh dengan judul besar. Terbagi: gambar dan teks berdampingan (bertumpuk di HP). Showcase menempel: visual tetap terlihat sementara teks berganti saat halaman discroll.
+   */
+  preset: 'cinematic' | 'split' | 'sticky';
+  /**
+   * Efek yang berjalan saat bagian ini discroll. "Otomatis" memilih yang paling cocok untuk tampilan di atas. Pengunjung yang mengaktifkan "kurangi gerakan" di perangkatnya tidak melihat animasi; kontennya tetap tampil utuh.
+   */
+  animation?: ('auto' | 'none' | 'fade' | 'reveal' | 'zoom' | 'parallax') | null;
+  /**
+   * Teks pendek di atas judul, mis. "Studi kasus" atau "Bab 1".
+   */
+  eyebrow?: string | null;
+  /**
+   * Judul besar bagian ini. Singkat lebih kuat (maksimal sekitar 8 kata).
+   */
+  title: string;
+  /**
+   * Satu-dua paragraf pendek. Untuk "Showcase menempel", teks diisi di tiap panel.
+   */
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Gunakan gambar landscape beresolusi tinggi (minimal 1920 px untuk Sinematik). Titik fokus yang diatur di Media menentukan bagian yang tetap terlihat saat dipotong. Untuk Sinematik, gambar ini juga dipakai sebagai cadangan kalau video belum termuat.
+   */
+  media?: (number | null) | Media;
+  /**
+   * Video pendek yang berputar tanpa suara di belakang judul. Dijeda otomatis saat di luar layar atau bila pengunjung memilih "kurangi gerakan" (yang tampil gambar saja). Pakai file kecil (di bawah 8 MB).
+   */
+  video?: (number | null) | Video;
+  textPosition?: ('bottom' | 'center') | null;
+  /**
+   * Naikkan kalau teks sulit dibaca di atas gambar yang terang.
+   */
+  overlay?: ('soft' | 'medium' | 'strong') | null;
+  mediaSide?: ('left' | 'right') | null;
+  /**
+   * Di HP, visual tampil di atas teks tiap panel (tidak menempel).
+   */
+  stickySide?: ('left' | 'right') | null;
+  /**
+   * Tiap panel = satu langkah cerita: teks di satu sisi, visualnya menempel di sisi lain. Isi 2–8 panel; urutkan dengan menyeret.
+   */
+  panels?:
+    | {
+        title: string;
+        /**
+         * Satu paragraf pendek sudah cukup.
+         */
+        body?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        /**
+         * Gambar yang menempel saat panel ini aktif. Rasio yang sama antar panel terlihat paling rapi.
+         */
+        media: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Biarkan "default" kalau tidak perlu menimpa layout block ini.
+   */
+  layout?: {
+    width?: ('default' | 'narrow' | 'content' | 'wide' | 'full') | null;
+    spaceBefore?: ('default' | 'none' | 'sm' | 'md' | 'lg' | 'xl') | null;
+    spaceAfter?: ('default' | 'none' | 'sm' | 'md' | 'lg' | 'xl') | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'scrollStory';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -672,6 +773,7 @@ export interface Page {
         | TextBlock
         | ImageBlock
         | ImageTextBlock
+        | ScrollStoryBlock
         | GalleryBlock
         | VideoBlock
         | LinkBlock
@@ -714,7 +816,7 @@ export interface TeamBlock {
   title?: string | null;
   subtitle?: string | null;
   /**
-   * Tambahkan anggota satu per satu. Kalau daftar kosong, block ini tidak tampil di halaman.
+   * Tambahkan anggota satu persatu, kalau daftar kosong block ini tidak tersedia tampil di halaman
    */
   members?:
     | {
@@ -722,7 +824,7 @@ export interface TeamBlock {
         name: string;
         role: string;
         /**
-         * Maksimal 280 karakter.
+         * Maksimal 280 karakter
          */
         bio: string;
         socials?:
@@ -800,6 +902,7 @@ export interface Post {
         | TextBlock
         | ImageBlock
         | ImageTextBlock
+        | ScrollStoryBlock
         | GalleryBlock
         | VideoBlock
         | LinkBlock
@@ -844,11 +947,11 @@ export interface Contact {
   status: 'new' | 'read' | 'archived' | 'spam';
   followUp?: {
     /**
-     * Data masuk baru otomatis "Baru". Kosong berarti data lama yang belum diatur.
+     * Data masuk baru otomatis "Baru", Kosong berarti data lama yang belum diatur
      */
     status?: ('new' | 'contacted' | 'deal' | 'dropped') | null;
     /**
-     * Mis. sudah dihubungi lewat WhatsApp, menunggu jawaban.
+     * Misal : sudah dihubungi lewat whatsapp, menunggu jawaban
      */
     notes?: string | null;
     updatedAt?: string | null;
@@ -1021,11 +1124,11 @@ export interface Booking {
   reminderSentAt?: string | null;
   followUp?: {
     /**
-     * Data masuk baru otomatis "Baru". Kosong berarti data lama yang belum diatur.
+     * Data masuk baru otomatis "Baru", Kosong berarti data lama yang belum diatur
      */
     status?: ('new' | 'contacted' | 'deal' | 'dropped') | null;
     /**
-     * Mis. sudah dihubungi lewat WhatsApp, menunggu jawaban.
+     * Misal : sudah dihubungi lewat whatsapp, menunggu jawaban
      */
     notes?: string | null;
     updatedAt?: string | null;
@@ -1402,6 +1505,7 @@ export interface ProjectsSelect<T extends boolean = true> {
         text?: T | TextBlockSelect<T>;
         image?: T | ImageBlockSelect<T>;
         imageText?: T | ImageTextBlockSelect<T>;
+        scrollStory?: T | ScrollStoryBlockSelect<T>;
         gallery?: T | GalleryBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
         link?: T | LinkBlockSelect<T>;
@@ -1501,6 +1605,40 @@ export interface ImageTextBlockSelect<T extends boolean = true> {
         spaceBefore?: T;
         spaceAfter?: T;
         motion?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ScrollStoryBlock_select".
+ */
+export interface ScrollStoryBlockSelect<T extends boolean = true> {
+  preset?: T;
+  animation?: T;
+  eyebrow?: T;
+  title?: T;
+  body?: T;
+  media?: T;
+  video?: T;
+  textPosition?: T;
+  overlay?: T;
+  mediaSide?: T;
+  stickySide?: T;
+  panels?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        media?: T;
+        id?: T;
+      };
+  layout?:
+    | T
+    | {
+        width?: T;
+        spaceBefore?: T;
+        spaceAfter?: T;
       };
   id?: T;
   blockName?: T;
@@ -1685,6 +1823,7 @@ export interface PagesSelect<T extends boolean = true> {
         text?: T | TextBlockSelect<T>;
         image?: T | ImageBlockSelect<T>;
         imageText?: T | ImageTextBlockSelect<T>;
+        scrollStory?: T | ScrollStoryBlockSelect<T>;
         gallery?: T | GalleryBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
         link?: T | LinkBlockSelect<T>;
@@ -1772,6 +1911,7 @@ export interface PostsSelect<T extends boolean = true> {
         text?: T | TextBlockSelect<T>;
         image?: T | ImageBlockSelect<T>;
         imageText?: T | ImageTextBlockSelect<T>;
+        scrollStory?: T | ScrollStoryBlockSelect<T>;
         gallery?: T | GalleryBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
         link?: T | LinkBlockSelect<T>;

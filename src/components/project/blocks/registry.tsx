@@ -9,6 +9,7 @@ import { LinkView } from './LinkView'
 import { ListView } from './ListView'
 import { MetaSlotView } from './MetaSlotView'
 import { QuoteView } from './QuoteView'
+import { ScrollStoryView } from './ScrollStoryView'
 import { SpacerView } from './SpacerView'
 import { TeamView } from './TeamView'
 import { TextView } from './TextView'
@@ -36,6 +37,8 @@ export const blockRegistry: { [T in BlockType]: BlockEntry<T> } = {
   image: { Component: ImageView, defaults: layout('wide', 'md', 'reveal') },
   imageText: { Component: ImageTextView, defaults: layout('wide', 'md', 'reveal') },
   gallery: { Component: GalleryView, defaults: layout('wide', 'md', 'reveal') },
+  /** Full-bleed supaya preset Sinematik bisa selebar layar; Terbagi dan Showcase memasang kolom sendiri. Animasi diatur block-nya sendiri. */
+  scrollStory: { Component: ScrollStoryView, defaults: layout('full', 'lg', 'none') },
   video: { Component: VideoView, defaults: layout('wide', 'md') },
   link: { Component: LinkView, defaults: layout('content', 'md') },
   quote: { Component: QuoteView, defaults: layout('content', 'lg') },

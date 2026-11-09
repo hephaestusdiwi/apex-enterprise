@@ -48,15 +48,16 @@ export default buildConfig({
         '/components/admin/EditorialQueue#EditorialQueue',
         '/components/admin/BookingQueue#BookingQueue',
       ],
-      beforeNavLinks: [
-        '/components/admin/NewMessagesLink#NewMessagesLink',    
-        '/components/admin/BookingNavLinks#BookingNavLinks',
-      ],
+      Nav: '/components/admin/AdminNav#AdminNav',
       views: {
         dashboard: { Component: '/components/admin/Dashboard#Dashboard' },
         bookingCalendar: {
           Component: '/components/admin/BookingCalendarView#BookingCalendarView',
           path: '/booking-calendar',
+        },
+        visitorStats: {
+          Component: '/components/admin/stats/VisitorStatsView#VisitorStatsView',
+          path: '/statistik',
         },
       },
     },
